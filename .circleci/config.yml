@@ -1,0 +1,32 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: golang
+    working_directory: /go/src/github.com/raviqqe/linkcheck
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            apt -y update --fix-missing
+            apt -y install rake
+            apt -y install bundler rake
+      - run:
+          name: Dependencies
+          command: rake deps
+      - run:
+          name: Lint
+          command: rake lint
+      - run:
+          name: Unit Test
+          command: rake unit_test
+      - run:
+          name: Command Test
+          command: rake command_test
+      - run:
+          name: Build
+          command: rake build
+      - run:
+          name: Install
+          command: rake install
