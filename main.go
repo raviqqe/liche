@@ -8,6 +8,13 @@ import (
 )
 
 func main() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Fprintln(os.Stderr, r.(error).Error())
+			os.Exit(1)
+		}
+	}()
+
 	getArgs()
 }
 
@@ -20,8 +27,7 @@ Usage:
 	args, err := docopt.Parse(usage, nil, true, "linkcheck", true)
 
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(1)
+		panic(err)
 	}
 
 	return args
