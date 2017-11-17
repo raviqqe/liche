@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/a8m/mark"
 	docopt "github.com/docopt/docopt-go"
 )
 
@@ -18,11 +19,13 @@ func main() {
 
 	args := getArgs()
 
-	_, err := ioutil.ReadFile(args["<filename>"].(string))
+	bs, err := ioutil.ReadFile(args["<filename>"].(string))
 
 	if err != nil {
 		panic(err)
 	}
+
+	mark.Render(string(bs))
 }
 
 func getArgs() map[string]interface{} {
