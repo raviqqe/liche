@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/url"
 	"strings"
 	"testing"
 
@@ -38,4 +39,11 @@ func TestExtractUrls(t *testing.T) {
 		assert.Equal(t, nil, err)
 		assert.Equal(t, c.numUrls, len(extractUrls(n)))
 	}
+}
+
+func TestUrlParse(t *testing.T) {
+	u, err := url.Parse("file-path")
+
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "", u.Scheme)
 }
