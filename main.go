@@ -35,10 +35,9 @@ func main() {
 		panic(err)
 	}
 
-	ss := extractUrls(n)
 	ok := true
 
-	for s, _ := range ss {
+	for s := range extractUrls(n) {
 		if _, err := http.Get(s); err != nil {
 			printToStderr("ERROR: " + err.Error())
 			ok = false
