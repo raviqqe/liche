@@ -29,13 +29,13 @@ func (c urlChecker) Check(s string) bool {
 	return err == nil
 }
 
-func (c urlChecker) CheckMany(ss []string) {
+func (c urlChecker) CheckMany(ss []string) bool {
 	bs := make(chan bool, len(ss))
 
 	for _, s := range ss {
-		go func() {
-			bs <- c.Check()
-		}()
+		go func(s string) {
+			bs <- c.Check(s)
+		}(s)
 	}
 
 	ok := true
