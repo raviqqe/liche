@@ -44,6 +44,8 @@ func main() {
 		if _, err := http.Get(s); err != nil {
 			printToStderr(color.New(color.FgRed).SprintFunc()("ERROR") + "\t" + colored + "\t" + err.Error())
 			ok = false
+		} else if err == nil && args["--verbose"].(bool) {
+			printToStderr(color.New(color.FgGreen).SprintFunc()("OK") + "\t" + colored)
 		}
 	}
 
@@ -88,7 +90,10 @@ func getArgs() map[string]interface{} {
 	usage := `Link checker for Markdown and HTML
 
 Usage:
-	linkcheck <filename>`
+	linkcheck [-v] <filename>
+
+Options:
+	-v, --verbose  Be verbose`
 
 	args, err := docopt.Parse(usage, nil, true, "linkcheck", true)
 

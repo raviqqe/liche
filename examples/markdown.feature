@@ -41,3 +41,19 @@ Feature: Markdown
     When I run `linkcheck foo.md`
     Then the exit status should be 1
     And the stderr should contain "ERROR"
+
+  Scenario: Check a markdown file which contains a live link in verbose mode
+    Given a file named "foo.md" with:
+    """
+    [Google](https://google.com)
+    """
+    When I successfully run `linkcheck -v foo.md`
+    Then the stderr should contain "OK"
+
+  Scenario: Check a markdown file which contains a live link in verbose mode with a long option
+    Given a file named "foo.md" with:
+    """
+    [Google](https://google.com)
+    """
+    When I successfully run `linkcheck --verbose foo.md`
+    Then the stderr should contain "OK"
