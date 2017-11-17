@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/a8m/mark"
 	"github.com/docopt/docopt-go"
@@ -36,17 +37,21 @@ func main() {
 		panic(err)
 	}
 
+	checkURLs(extractURLs(n), args["--verbose"].(bool))
+}
+
+func checkURLs(ss []string, verbose bool) {
+	client := &http.Client{Timeout: 5 * time.Second}
+	bs := make(chan bool, len(ss))
+
+	for _, s := range ss {
+		go checkURL(client, s, bs, verbose)
+	}
+
 	ok := true
 
-	for s := range extractURLs(n) {
-		colored := color.New(color.FgCyan).SprintFunc()(s)
-
-		if _, err := http.Get(s); err != nil {
-			printToStderr(color.New(color.FgRed).SprintFunc()("ERROR") + "\t" + colored + "\t" + err.Error())
-			ok = false
-		} else if err == nil && args["--verbose"].(bool) {
-			printToStderr(color.New(color.FgGreen).SprintFunc()("OK") + "\t" + colored)
-		}
+	for i := 0; i < len(ss); i++ {
+		ok = ok && <-bs
 	}
 
 	if !ok {
@@ -54,7 +59,20 @@ func main() {
 	}
 }
 
-func extractURLs(n *html.Node) map[string]bool {
+func checkURL(client *http.Client, s string, bs chan bool, verbose bool) {
+	_, err := client.Get(s)
+
+	if s := color.New(color.FgCyan).SprintFunc()(s); err != nil {
+		printToStderr(
+			color.New(color.FgRed).SprintFunc()("ERROR") + "\t" + s + "\t" + err.Error())
+	} else if err == nil && verbose {
+		printToStderr(color.New(color.FgGreen).SprintFunc()("OK") + "\t" + s)
+	}
+
+	bs <- err == nil
+}
+
+func extractURLs(n *html.Node) []string {
 	ss := make(map[string]bool)
 	ns := make([]*html.Node, 0, 1024)
 	ns = append(ns, n)
@@ -76,6 +94,16 @@ func extractURLs(n *html.Node) map[string]bool {
 		for n := n.FirstChild; n != nil; n = n.NextSibling {
 			ns = append(ns, n)
 		}
+	}
+
+	return stringSetToSlice(ss)
+}
+
+func stringSetToSlice(s2b map[string]bool) []string {
+	ss := make([]string, 0, len(s2b))
+
+	for s := range s2b {
+		ss = append(ss, s)
 	}
 
 	return ss
