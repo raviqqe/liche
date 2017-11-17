@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/a8m/mark"
 	docopt "github.com/docopt/docopt-go"
+	"golang.org/x/net/html"
 )
 
 func main() {
@@ -25,7 +27,7 @@ func main() {
 		panic(err)
 	}
 
-	mark.Render(string(bs))
+	html.Parse(strings.NewReader(mark.Render(string(bs))))
 }
 
 func getArgs() map[string]interface{} {
