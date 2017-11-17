@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"strings"
 
@@ -14,7 +15,7 @@ import (
 func main() {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Fprintln(os.Stderr, r.(error).Error())
+			printToStderr(r.(error).Error())
 			os.Exit(1)
 		}
 	}()
@@ -27,7 +28,25 @@ func main() {
 		panic(err)
 	}
 
-	html.Parse(strings.NewReader(mark.Render(string(bs))))
+	n, err := html.Parse(strings.NewReader(mark.Render(string(bs))))
+
+	if err != nil {
+		panic(err)
+	}
+
+	ss := extractUrls(n)
+	ok := true
+
+	for s, _ := range ss {
+		if _, err := http.Get(s); err != nil {
+			printToStderr("ERROR: " + err.Error())
+			ok = false
+		}
+	}
+
+	if !ok {
+		os.Exit(1)
+	}
 }
 
 func extractUrls(n *html.Node) map[string]bool {
@@ -70,4 +89,8 @@ Usage:
 	}
 
 	return args
+}
+
+func printToStderr(xs ...interface{}) {
+	fmt.Fprintln(os.Stderr, xs...)
 }
