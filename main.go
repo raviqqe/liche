@@ -10,6 +10,7 @@ import (
 
 	"github.com/a8m/mark"
 	"github.com/docopt/docopt-go"
+	"github.com/fatih/color"
 	"golang.org/x/net/html"
 )
 
@@ -38,8 +39,10 @@ func main() {
 	ok := true
 
 	for s := range extractURLs(n) {
+		colored := color.New(color.FgCyan).SprintFunc()(s)
+
 		if _, err := http.Get(s); err != nil {
-			printToStderr("ERROR: " + err.Error())
+			printToStderr(color.New(color.FgRed).SprintFunc()("ERROR") + "\t" + colored + "\t" + err.Error())
 			ok = false
 		}
 	}

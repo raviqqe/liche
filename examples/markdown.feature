@@ -40,4 +40,4 @@ Feature: Markdown
     """
     When I run `linkcheck foo.md`
     Then the exit status should be 1
-    And the stderr should contain "ERROR: "
+    And the stderr should contain "ERROR"
