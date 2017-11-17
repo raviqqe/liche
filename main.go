@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
@@ -61,7 +62,7 @@ func extractUrls(n *html.Node) map[string]bool {
 
 		if n.Type == html.ElementNode && n.Data == "a" {
 			for _, a := range n.Attr {
-				if a.Key == "href" {
+				if a.Key == "href" && isUrl(a.Val) {
 					ss[a.Val] = true
 					break
 				}
@@ -74,6 +75,11 @@ func extractUrls(n *html.Node) map[string]bool {
 	}
 
 	return ss
+}
+
+func isUrl(s string) bool {
+	u, err := url.Parse(s)
+	return err == nil && (u.Scheme == "http" || u.Scheme == "https")
 }
 
 func getArgs() map[string]interface{} {

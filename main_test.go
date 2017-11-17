@@ -47,3 +47,13 @@ func TestUrlParse(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "", u.Scheme)
 }
+
+func TestIsUrl(t *testing.T) {
+	for _, s := range []string{"http://google.com", "https://google.com"} {
+		assert.True(t, isUrl(s))
+	}
+
+	for _, s := range []string{"", "file-path"} {
+		assert.False(t, isUrl(s))
+	}
+}
