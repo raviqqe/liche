@@ -37,7 +37,7 @@ func main() {
 
 	ok := true
 
-	for s := range extractUrls(n) {
+	for s := range extractURLs(n) {
 		if _, err := http.Get(s); err != nil {
 			printToStderr("ERROR: " + err.Error())
 			ok = false
@@ -49,7 +49,7 @@ func main() {
 	}
 }
 
-func extractUrls(n *html.Node) map[string]bool {
+func extractURLs(n *html.Node) map[string]bool {
 	ss := make(map[string]bool)
 	ns := make([]*html.Node, 0, 1024)
 	ns = append(ns, n)
@@ -61,7 +61,7 @@ func extractUrls(n *html.Node) map[string]bool {
 
 		if n.Type == html.ElementNode && n.Data == "a" {
 			for _, a := range n.Attr {
-				if a.Key == "href" && isUrl(a.Val) {
+				if a.Key == "href" && isURL(a.Val) {
 					ss[a.Val] = true
 					break
 				}
@@ -76,7 +76,7 @@ func extractUrls(n *html.Node) map[string]bool {
 	return ss
 }
 
-func isUrl(s string) bool {
+func isURL(s string) bool {
 	u, err := url.Parse(s)
 	return err == nil && (u.Scheme == "http" || u.Scheme == "https")
 }

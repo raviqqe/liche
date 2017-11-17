@@ -9,10 +9,10 @@ import (
 	"golang.org/x/net/html"
 )
 
-func TestExtractUrls(t *testing.T) {
+func TestExtractURLs(t *testing.T) {
 	for _, c := range []struct {
 		html    string
-		numUrls int
+		numURLs int
 	}{
 		{`<a href="https://google.com">Google</a>`, 1},
 		{
@@ -37,23 +37,23 @@ func TestExtractUrls(t *testing.T) {
 		n, err := html.Parse(strings.NewReader(c.html))
 
 		assert.Equal(t, nil, err)
-		assert.Equal(t, c.numUrls, len(extractUrls(n)))
+		assert.Equal(t, c.numURLs, len(extractURLs(n)))
 	}
 }
 
-func TestUrlParse(t *testing.T) {
+func TestURLParse(t *testing.T) {
 	u, err := url.Parse("file-path")
 
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "", u.Scheme)
 }
 
-func TestIsUrl(t *testing.T) {
+func TestIsURL(t *testing.T) {
 	for _, s := range []string{"http://google.com", "https://google.com"} {
-		assert.True(t, isUrl(s))
+		assert.True(t, isURL(s))
 	}
 
 	for _, s := range []string{"", "file-path"} {
-		assert.False(t, isUrl(s))
+		assert.False(t, isURL(s))
 	}
 }
