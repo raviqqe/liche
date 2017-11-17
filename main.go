@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	docopt "github.com/docopt/docopt-go"
@@ -15,7 +16,13 @@ func main() {
 		}
 	}()
 
-	getArgs()
+	args := getArgs()
+
+	_, err := ioutil.ReadFile(args["<filename>"].(string))
+
+	if err != nil {
+		panic(err)
+	}
 }
 
 func getArgs() map[string]interface{} {
