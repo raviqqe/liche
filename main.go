@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/a8m/mark"
-	docopt "github.com/docopt/docopt-go"
+	"github.com/docopt/docopt-go"
 	"golang.org/x/net/html"
 )
 
