@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/docopt/docopt-go"
-	"golang.org/x/net/html"
 )
 
 const usage = `Link checker for Markdown and HTML
@@ -55,43 +54,6 @@ func main() {
 	if !ok {
 		os.Exit(1)
 	}
-}
-
-func extractURLs(n *html.Node) []string {
-	ss := make(map[string]bool)
-	ns := make([]*html.Node, 0, 1024)
-	ns = append(ns, n)
-
-	for len(ns) > 0 {
-		i := len(ns) - 1
-		n := ns[i]
-		ns = ns[:i]
-
-		if n.Type == html.ElementNode {
-			switch n.Data {
-			case "a":
-				for _, a := range n.Attr {
-					if a.Key == "href" && isURL(a.Val) {
-						ss[a.Val] = true
-						break
-					}
-				}
-			case "img":
-				for _, a := range n.Attr {
-					if a.Key == "src" && isURL(a.Val) {
-						ss[a.Val] = true
-						break
-					}
-				}
-			}
-		}
-
-		for n := n.FirstChild; n != nil; n = n.NextSibling {
-			ns = append(ns, n)
-		}
-	}
-
-	return stringSetToSlice(ss)
 }
 
 func isURL(s string) bool {
