@@ -68,3 +68,15 @@ Feature: Markdown
     Then the exit status should be 1
     And the stderr should contain "OK"
     And the stderr should contain "ERROR"
+
+  Scenario: Check 2 markdown files
+    Given a file named "foo.md" with:
+    """
+    [Google](https://google.com)
+    """
+    And a file named "bar.md" with:
+    """
+    [Yahoo](https://yahoo.com)
+    """
+    When I successfully run `linkcheck foo.md bar.md`
+    Then the stdout should contain exactly ""
