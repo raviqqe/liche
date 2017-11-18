@@ -92,7 +92,7 @@ Feature: Markdown
     When I successfully run `liche foo.md bar.md`
     Then the stdout should contain exactly ""
 
-  Scenario: Check 2 markdown files
+  Scenario: Check images and links
     Given a file named "foo.md" with:
     """
     [![Circle CI](https://img.shields.io/circleci/project/github/raviqqe/liche.svg?style=flat-square)](https://circleci.com/gh/raviqqe/liche)
