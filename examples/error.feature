@@ -8,3 +8,4 @@ Feature: Error
     Given a file named "foo.md" with ""
     When I run `linkcheck bar.md`
     Then the exit status should be 1
+    And the stderr should contain "no such file"

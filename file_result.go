@@ -1,6 +1,10 @@
 package main
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/fatih/color"
+)
 
 type fileResult struct {
 	filename   string
@@ -10,6 +14,10 @@ type fileResult struct {
 
 func (r fileResult) String(verbose bool) string {
 	ss := make([]string, 0, len(r.urlResults))
+
+	if r.err != nil {
+		ss = append(ss, "\t"+color.RedString(r.err.Error()))
+	}
 
 	for _, r := range r.urlResults {
 		if r.err != nil || verbose {
