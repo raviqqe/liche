@@ -10,7 +10,7 @@ import (
 )
 
 var defaultConcurrency = func() int {
-	const max = 256
+	const max = 512           // Max number of open files is limited to 1024 on Linux.
 	n := 8 * runtime.NumCPU() // 8 is an empirical value.
 
 	if n < max {
