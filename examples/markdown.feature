@@ -92,4 +92,4 @@ Feature: Markdown
     linkcheck -v foo.md 2>&1 | wc -l
     """
     When I successfully run `sh foo.sh`
-    Then the stdout should contain exactly "2"
+    Then the stdout should contain exactly "4"

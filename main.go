@@ -49,11 +49,21 @@ func extractURLs(n *html.Node) []string {
 		n := ns[i]
 		ns = ns[:i]
 
-		if n.Type == html.ElementNode && n.Data == "a" {
-			for _, a := range n.Attr {
-				if a.Key == "href" && isURL(a.Val) {
-					ss[a.Val] = true
-					break
+		if n.Type == html.ElementNode {
+			switch n.Data {
+			case "a":
+				for _, a := range n.Attr {
+					if a.Key == "href" && isURL(a.Val) {
+						ss[a.Val] = true
+						break
+					}
+				}
+			case "img":
+				for _, a := range n.Attr {
+					if a.Key == "src" && isURL(a.Val) {
+						ss[a.Val] = true
+						break
+					}
 				}
 			}
 		}
@@ -74,10 +84,10 @@ func isURL(s string) bool {
 func getArgs() map[string]interface{} {
 	usage := `Link checker for Markdown and HTML
 
-	Usage:
+Usage:
 	linkcheck [-v] <filenames>...
 
-	Options:
+Options:
 	-v, --verbose  Be verbose`
 
 	args, err := docopt.Parse(usage, nil, true, "linkcheck", true)
