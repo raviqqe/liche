@@ -49,6 +49,7 @@ func (c urlChecker) CheckMany(ss []string, rc chan<- urlResult) {
 
 	for _, s := range ss {
 		wg.Add(1)
+
 		go func(s string) {
 			rc <- urlResult{s, c.Check(s)}
 			wg.Done()
