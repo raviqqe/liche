@@ -10,11 +10,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	fs := args.filenames
-	rc := make(chan fileResult, len(fs))
+	rc := make(chan fileResult, len(args.filenames))
 	c := newFileChecker(args.timeout)
 
-	go c.CheckMany(fs, rc)
+	go c.CheckMany(args.filenames, rc)
 
 	ok := true
 
