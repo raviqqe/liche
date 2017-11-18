@@ -15,7 +15,12 @@ func newURLChecker(timeout time.Duration) urlChecker {
 }
 
 func (c urlChecker) Check(s string) error {
-	_, err := c.client.Get(s)
+	res, err := c.client.Get(s)
+
+	if err != nil && res != nil {
+		defer res.Body.Close()
+	}
+
 	return err
 }
 
