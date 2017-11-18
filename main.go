@@ -9,6 +9,14 @@ import (
 	"golang.org/x/net/html"
 )
 
+const usage = `Link checker for Markdown and HTML
+
+Usage:
+	linkcheck [-v] <filenames>...
+
+Options:
+	-v, --verbose  Be verbose`
+
 func main() {
 	defer func() {
 		if r := recover(); r != nil {
@@ -82,14 +90,6 @@ func isURL(s string) bool {
 }
 
 func getArgs() map[string]interface{} {
-	usage := `Link checker for Markdown and HTML
-
-Usage:
-	linkcheck [-v] <filenames>...
-
-Options:
-	-v, --verbose  Be verbose`
-
 	args, err := docopt.Parse(usage, nil, true, "linkcheck", true)
 
 	if err != nil {
