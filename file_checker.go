@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	"net/url"
+	"strings"
 	"sync"
 	"time"
 
@@ -20,13 +21,7 @@ func newFileChecker(timeout time.Duration, s semaphore) fileChecker {
 }
 
 func (c fileChecker) Check(f string) ([]urlResult, error) {
-	bs, err := ioutil.ReadFile(f)
-
-	if err != nil {
-		return nil, err
-	}
-
-	n, err := html.Parse(bytes.NewReader(blackfriday.Run(bs)))
+	n, err := parseFile(f)
 
 	if err != nil {
 		return nil, err
@@ -64,6 +59,26 @@ func (c fileChecker) CheckMany(fs []string, rc chan<- fileResult) {
 
 	wg.Wait()
 	close(rc)
+}
+
+func parseFile(f string) (*html.Node, error) {
+	bs, err := ioutil.ReadFile(f)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !isHTMLFile(f) {
+		bs = blackfriday.Run(bs)
+	}
+
+	n, err := html.Parse(bytes.NewReader(bs))
+
+	if err != nil {
+		return nil, err
+	}
+
+	return n, nil
 }
 
 func extractURLs(n *html.Node) []string {
@@ -106,4 +121,8 @@ func extractURLs(n *html.Node) []string {
 func isURL(s string) bool {
 	u, err := url.Parse(s)
 	return err == nil && (u.Scheme == "http" || u.Scheme == "https")
+}
+
+func isHTMLFile(f string) bool {
+	return strings.HasSuffix(f, ".html") || strings.HasSuffix(f, ".htm")
 }
