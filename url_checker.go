@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"sync"
 	"time"
-
-	"github.com/fatih/color"
 )
 
 type urlChecker struct {
@@ -34,17 +32,4 @@ func (c urlChecker) CheckMany(ss []string, rc chan<- urlResult) {
 
 	wg.Wait()
 	close(rc)
-}
-
-type urlResult struct {
-	url string
-	err error
-}
-
-func (r urlResult) String() string {
-	if r.err == nil {
-		return color.GreenString("OK") + "\t" + r.url
-	}
-
-	return color.RedString("ERROR") + "\t" + r.url + "\t" + color.YellowString(r.err.Error())
 }
