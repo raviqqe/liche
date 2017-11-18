@@ -19,11 +19,10 @@ func newURLChecker(timeout time.Duration, verbose bool) urlChecker {
 func (c urlChecker) Check(s string) bool {
 	_, err := c.client.Get(s)
 
-	if s := color.New(color.FgCyan).SprintFunc()(s); err != nil {
-		printToStderr(
-			color.New(color.FgRed).SprintFunc()("ERROR") + "\t" + s + "\t" + err.Error())
+	if err != nil {
+		printToStderr(color.RedString("ERROR") + "\t" + s + "\t" + color.YellowString(err.Error()))
 	} else if err == nil && c.verbose {
-		printToStderr(color.New(color.FgGreen).SprintFunc()("OK") + "\t" + s)
+		printToStderr(color.GreenString("OK") + "\t" + s)
 	}
 
 	return err == nil
