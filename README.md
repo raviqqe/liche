@@ -22,6 +22,12 @@ liche file.md
 liche file1.md file2.md
 ```
 
+## Supported properties
+
+- HTML tags: `a`, `img`
+- HTML attributes: `href`, `src`
+- Schemes: `http`, `https`
+
 ## License
 
 [MIT](LICENSE)
