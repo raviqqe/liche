@@ -44,10 +44,10 @@ func (c urlChecker) Check(s string) (resultErr error) {
 	return err
 }
 
-func (c urlChecker) CheckMany(ss []string, rc chan<- urlResult) {
+func (c urlChecker) CheckMany(us []string, rc chan<- urlResult) {
 	wg := sync.WaitGroup{}
 
-	for _, s := range ss {
+	for _, s := range us {
 		wg.Add(1)
 
 		go func(s string) {
