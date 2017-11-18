@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/raviqqe/liche?style=flat-square)](https://goreportcard.com/report/github.com/raviqqe/liche)
 [![License](https://img.shields.io/github/license/raviqqe/liche.svg?style=flat-square)](LICENSE)
 
-[![asciicast](https://asciinema.org/a/148105.png)](https://asciinema.org/a/148105)
+[![asciicast](https://asciinema.org/a/148110.png)](https://asciinema.org/a/148110)
 
 `liche` is a command to check links in Markdown and HTML files.
 It checks all `a` and `img` tags in specified files.
