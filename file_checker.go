@@ -52,9 +52,7 @@ func (c fileChecker) CheckMany(fs []string, rc chan<- fileResult) {
 		wg.Add(1)
 
 		go func(f string) {
-			rs, err := c.Check(f)
-
-			if err == nil {
+			if rs, err := c.Check(f); err == nil {
 				rc <- fileResult{filename: f, urlResults: rs}
 			} else {
 				rc <- fileResult{filename: f, err: err}
