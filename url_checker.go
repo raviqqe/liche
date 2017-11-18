@@ -41,7 +41,7 @@ func (c urlChecker) CheckMany(ss []string) bool {
 	ok := true
 
 	for i := 0; i < len(ss); i++ {
-		ok = ok && <-bs
+		ok = <-bs && ok
 	}
 
 	return ok

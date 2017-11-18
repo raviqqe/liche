@@ -57,3 +57,14 @@ Feature: Markdown
     """
     When I successfully run `linkcheck --verbose foo.md`
     Then the stderr should contain "OK"
+
+  Scenario: Check a markdown file which contains live and dead links in verbose mode
+    Given a file named "foo.md" with:
+    """
+    [Google](https://google.com)
+    [The answer](https://some-say-the-answer-is-42.com)
+    """
+    When I run `linkcheck -v foo.md`
+    Then the exit status should be 1
+    And the stderr should contain "OK"
+    And the stderr should contain "ERROR"
