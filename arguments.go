@@ -10,7 +10,7 @@ import (
 const usage = `Link checker for Markdown and HTML
 
 Usage:
-	linkcheck [-t <timeout>] [-v] <filenames>...
+	liche [-t <timeout>] [-v] <filenames>...
 
 Options:
 	-v, --verbose  Be verbose
@@ -23,7 +23,7 @@ type arguments struct {
 }
 
 func getArgs() (arguments, error) {
-	args, err := docopt.Parse(usage, nil, true, "linkcheck", true)
+	args, err := docopt.Parse(usage, nil, true, "liche", true)
 
 	if err != nil {
 		return arguments{}, err

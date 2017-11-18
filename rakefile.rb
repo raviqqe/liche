@@ -9,7 +9,7 @@ task :deps do
 end
 
 task :build do
-  sh 'go build -o bin/linkcheck'
+  sh 'go build -o bin/liche'
 end
 
 task :fast_unit_test do
