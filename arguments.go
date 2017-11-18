@@ -1,35 +1,57 @@
 package main
 
 import (
+	"fmt"
+	"runtime"
 	"strconv"
 	"time"
 
 	"github.com/docopt/docopt-go"
 )
 
+const maxConcurrency = 256
+
+var defaultConcurrency = func() int {
+	n := 8 * runtime.NumCPU() // 8 is an empirical value.
+
+	if n < maxConcurrency {
+		return n
+	}
+
+	return maxConcurrency
+}()
+
 const usage = `Link checker for Markdown and HTML
 
 Usage:
-	liche [-t <timeout>] [-v] <filenames>...
+	liche [-c <num-requests>] [-t <timeout>] [-v] <filenames>...
 
 Options:
-	-v, --verbose  Be verbose
-	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds [default: 5]`
+	-c, --concurrency <num-requests>  Set max number of concurrent HTTP requests [default: %v]
+	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds [default: 5]
+	-v, --verbose  Be verbose`
 
 type arguments struct {
-	filenames []string
-	timeout   time.Duration
-	verbose   bool
+	filenames   []string
+	concurrency int
+	timeout     time.Duration
+	verbose     bool
 }
 
 func getArgs() (arguments, error) {
-	args, err := docopt.Parse(usage, nil, true, "liche", true)
+	args, err := docopt.Parse(fmt.Sprintf(usage, defaultConcurrency), nil, true, "liche", true)
 
 	if err != nil {
 		return arguments{}, err
 	}
 
-	f, err := strconv.ParseFloat(args["--timeout"].(string), 64)
+	c, err := strconv.ParseInt(args["--concurrency"].(string), 10, 32)
+
+	if err != nil {
+		return arguments{}, err
+	}
+
+	t, err := strconv.ParseFloat(args["--timeout"].(string), 64)
 
 	if err != nil {
 		return arguments{}, err
@@ -37,7 +59,8 @@ func getArgs() (arguments, error) {
 
 	return arguments{
 		args["<filenames>"].([]string),
-		time.Duration(f) * time.Second,
+		int(c),
+		time.Duration(t) * time.Second,
 		args["--verbose"].(bool),
 	}, nil
 }

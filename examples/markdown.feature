@@ -112,3 +112,11 @@ Feature: Markdown
     """
     When I successfully run `liche --timeout 10 foo.md`
     Then the stdout should contain exactly ""
+
+  Scenario: Set concurrency
+    Given a file named "foo.md" with:
+    """
+    [Google](https://google.com)
+    """
+    When I successfully run `liche --concurrency 10 foo.md`
+    Then the stdout should contain exactly ""

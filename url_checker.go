@@ -2,34 +2,22 @@ package main
 
 import (
 	"net/http"
-	"runtime"
 	"sync"
 	"time"
 )
 
-const maxOpenFiles = 512
-
-var sem = make(chan bool, func() int {
-	n := 8 * runtime.NumCPU() // 8 is an empirical value.
-
-	if n < maxOpenFiles {
-		return n
-	}
-
-	return maxOpenFiles
-}())
-
 type urlChecker struct {
-	client http.Client
+	client    http.Client
+	semaphore semaphore
 }
 
-func newURLChecker(timeout time.Duration) urlChecker {
-	return urlChecker{http.Client{Timeout: timeout}}
+func newURLChecker(t time.Duration, s semaphore) urlChecker {
+	return urlChecker{http.Client{Timeout: t}, s}
 }
 
 func (c urlChecker) Check(s string) (resultErr error) {
-	sem <- true
-	defer func() { <-sem }()
+	c.semaphore.Request()
+	defer c.semaphore.Release()
 
 	res, err := c.client.Get(s)
 

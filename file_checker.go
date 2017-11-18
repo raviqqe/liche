@@ -15,8 +15,8 @@ type fileChecker struct {
 	urlChecker urlChecker
 }
 
-func newFileChecker(timeout time.Duration) fileChecker {
-	return fileChecker{newURLChecker(timeout)}
+func newFileChecker(timeout time.Duration, s semaphore) fileChecker {
+	return fileChecker{newURLChecker(timeout, s)}
 }
 
 func (c fileChecker) Check(f string) ([]urlResult, error) {

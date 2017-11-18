@@ -11,7 +11,8 @@ func main() {
 	}
 
 	rc := make(chan fileResult, len(args.filenames))
-	c := newFileChecker(args.timeout)
+	s := newSemaphore(args.concurrency)
+	c := newFileChecker(args.timeout, s)
 
 	go c.CheckMany(args.filenames, rc)
 
