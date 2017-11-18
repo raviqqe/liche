@@ -1,6 +1,10 @@
 package main
 
-import "github.com/fatih/color"
+import (
+	"strings"
+
+	"github.com/fatih/color"
+)
 
 type urlResult struct {
 	url string
@@ -12,5 +16,8 @@ func (r urlResult) String() string {
 		return color.GreenString("OK") + "\t" + r.url
 	}
 
-	return color.RedString("ERROR") + "\t" + r.url + "\n\t" + color.YellowString(r.err.Error())
+	s := r.err.Error()
+
+	return color.RedString("ERROR") + "\t" + r.url + "\n\t" +
+		color.YellowString(strings.ToUpper(s[:1])+s[1:])
 }
