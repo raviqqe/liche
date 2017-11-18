@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/kr/text"
 )
 
 func stringSetToSlice(s2b map[string]bool) []string {
@@ -17,4 +19,8 @@ func stringSetToSlice(s2b map[string]bool) []string {
 
 func printToStderr(xs ...interface{}) {
 	fmt.Fprintln(os.Stderr, xs...)
+}
+
+func indent(s string) string {
+	return text.Indent(s, "\t")
 }

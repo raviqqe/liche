@@ -12,5 +12,5 @@ func (r urlResult) String() string {
 		return color.GreenString("OK") + "\t" + r.url
 	}
 
-	return color.RedString("ERROR") + "\t" + r.url + "\t" + color.YellowString(r.err.Error())
+	return color.RedString("ERROR") + "\t" + r.url + "\n\t" + color.YellowString(r.err.Error())
 }
