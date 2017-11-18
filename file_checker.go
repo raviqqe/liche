@@ -78,7 +78,7 @@ func (r fileResult) Ok() bool {
 }
 
 func extractURLs(n *html.Node) []string {
-	ss := make(map[string]bool)
+	us := make(map[string]bool)
 	ns := make([]*html.Node, 0, 1024)
 	ns = append(ns, n)
 
@@ -92,14 +92,14 @@ func extractURLs(n *html.Node) []string {
 			case "a":
 				for _, a := range n.Attr {
 					if a.Key == "href" && isURL(a.Val) {
-						ss[a.Val] = true
+						us[a.Val] = true
 						break
 					}
 				}
 			case "img":
 				for _, a := range n.Attr {
 					if a.Key == "src" && isURL(a.Val) {
-						ss[a.Val] = true
+						us[a.Val] = true
 						break
 					}
 				}
@@ -111,7 +111,7 @@ func extractURLs(n *html.Node) []string {
 		}
 	}
 
-	return stringSetToSlice(ss)
+	return stringSetToSlice(us)
 }
 
 func isURL(s string) bool {
