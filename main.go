@@ -1,15 +1,12 @@
 package main
 
 import (
-	"bytes"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"time"
 
 	"github.com/docopt/docopt-go"
 	"golang.org/x/net/html"
-	"gopkg.in/russross/blackfriday.v2"
 )
 
 func main() {
@@ -23,11 +20,11 @@ func main() {
 	args := getArgs()
 	fs := args["<filenames>"].([]string)
 	bs := make(chan bool, len(fs))
-	c := newURLChecker(5*time.Second, args["--verbose"].(bool))
+	c := newFileChecker(5*time.Second, args["--verbose"].(bool))
 
 	for _, f := range fs {
 		go func(f string) {
-			bs <- checkFile(c, f)
+			bs <- c.Check(f)
 		}(f)
 	}
 
@@ -40,24 +37,6 @@ func main() {
 	if !ok {
 		os.Exit(1)
 	}
-}
-
-func checkFile(c urlChecker, f string) bool {
-	bs, err := ioutil.ReadFile(f)
-
-	if err != nil {
-		printToStderr(err.Error())
-		return false
-	}
-
-	n, err := html.Parse(bytes.NewReader(blackfriday.Run(bs)))
-
-	if err != nil {
-		printToStderr(err.Error())
-		return false
-	}
-
-	return c.CheckMany(extractURLs(n))
 }
 
 func extractURLs(n *html.Node) []string {
