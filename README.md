@@ -25,9 +25,9 @@ Usage:
 	liche [-c <num-requests>] [-t <timeout>] [-v] <filenames>...
 
 Options:
-	-c, --concurrency <num-requests>  Set max number of concurrent HTTP requests [default: 32]
-	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds
-	-v, --verbose  Be verbose
+	-c, --concurrency <num-requests>  Set max number of concurrent HTTP requests. [default: 32]
+	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds. Disabled by default.
+	-v, --verbose  Be verbose.
 ```
 
 ### Markdown
