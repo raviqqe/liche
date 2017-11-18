@@ -45,7 +45,7 @@ func (c fileChecker) Check(f string) ([]urlResult, error) {
 	return rs, nil
 }
 
-func (c fileChecker) CheckMany(fs []string, rc chan fileResult) {
+func (c fileChecker) CheckMany(fs []string, rc chan<- fileResult) {
 	wg := sync.WaitGroup{}
 
 	for _, f := range fs {
