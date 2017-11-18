@@ -1,7 +1,6 @@
 package main
 
 import (
-	"net/url"
 	"os"
 	"time"
 )
@@ -52,9 +51,4 @@ func main() {
 	if !ok {
 		os.Exit(1)
 	}
-}
-
-func isURL(s string) bool {
-	u, err := url.Parse(s)
-	return err == nil && (u.Scheme == "http" || u.Scheme == "https")
 }

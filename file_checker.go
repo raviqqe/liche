@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"io/ioutil"
+	"net/url"
 	"strings"
 	"time"
 
@@ -111,4 +112,9 @@ func extractURLs(n *html.Node) []string {
 	}
 
 	return stringSetToSlice(ss)
+}
+
+func isURL(s string) bool {
+	u, err := url.Parse(s)
+	return err == nil && (u.Scheme == "http" || u.Scheme == "https")
 }
