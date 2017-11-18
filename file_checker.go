@@ -54,10 +54,10 @@ func (c fileChecker) CheckMany(fs []string, rc chan fileResult) {
 		go func(f string) {
 			rs, err := c.Check(f)
 
-			if err != nil {
-				rc <- fileResult{filename: f, err: err}
-			} else {
+			if err == nil {
 				rc <- fileResult{filename: f, urlResults: rs}
+			} else {
+				rc <- fileResult{filename: f, err: err}
 			}
 
 			wg.Done()
