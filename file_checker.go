@@ -14,8 +14,8 @@ type fileChecker struct {
 	urlChecker urlChecker
 }
 
-func newFileChecker(timeout time.Duration, verbose bool) fileChecker {
-	return fileChecker{newURLChecker(timeout, verbose)}
+func newFileChecker(timeout time.Duration) fileChecker {
+	return fileChecker{newURLChecker(timeout)}
 }
 
 func (c fileChecker) Check(f string) ([]urlResult, error) {
@@ -50,11 +50,13 @@ type fileResult struct {
 	err        error
 }
 
-func (r fileResult) String() string {
+func (r fileResult) String(verbose bool) string {
 	ss := make([]string, 0, len(r.urlResults))
 
 	for _, r := range r.urlResults {
-		ss = append(ss, "\t"+r.String())
+		if r.err != nil || verbose {
+			ss = append(ss, "\t"+r.String())
+		}
 	}
 
 	return strings.Join(append([]string{r.filename}, ss...), "\n")

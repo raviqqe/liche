@@ -9,12 +9,11 @@ import (
 )
 
 type urlChecker struct {
-	client  http.Client
-	verbose bool
+	client http.Client
 }
 
-func newURLChecker(timeout time.Duration, verbose bool) urlChecker {
-	return urlChecker{http.Client{Timeout: timeout}, verbose}
+func newURLChecker(timeout time.Duration) urlChecker {
+	return urlChecker{http.Client{Timeout: timeout}}
 }
 
 func (c urlChecker) Check(s string) error {

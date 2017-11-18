@@ -28,7 +28,7 @@ func main() {
 	args := getArgs()
 	fs := args["<filenames>"].([]string)
 	rc := make(chan fileResult, len(fs))
-	c := newFileChecker(5*time.Second, args["--verbose"].(bool))
+	c := newFileChecker(5 * time.Second)
 
 	for _, f := range fs {
 		go func(f string) {
@@ -49,7 +49,7 @@ func main() {
 
 		ok = ok && r.Ok()
 
-		printToStderr(r.String())
+		printToStderr(r.String(args["--verbose"].(bool)))
 	}
 
 	if !ok {
