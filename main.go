@@ -45,10 +45,14 @@ func main() {
 
 	for i := 0; i < len(fs); i++ {
 		r := <-rc
+		verbose := args["--verbose"].(bool)
 
-		ok = ok && r.Ok()
-
-		printToStderr(r.String(args["--verbose"].(bool)))
+		if !r.Ok() {
+			ok = false
+			printToStderr(r.String(verbose))
+		} else if r.Ok() && verbose {
+			printToStderr(r.String(true))
+		}
 	}
 
 	if !ok {
