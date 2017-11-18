@@ -6,17 +6,11 @@ import (
 )
 
 func main() {
-	defer func() {
-		if r := recover(); r != nil {
-			printToStderr(r.(error).Error())
-			os.Exit(1)
-		}
-	}()
-
 	args, err := getArgs()
 
 	if err != nil {
-		panic(err)
+		printToStderr(err.Error())
+		os.Exit(1)
 	}
 
 	fs := args.filenames
