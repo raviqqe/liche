@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/fatih/color"
@@ -16,32 +17,35 @@ func newURLChecker(timeout time.Duration, verbose bool) urlChecker {
 	return urlChecker{http.Client{Timeout: timeout}, verbose}
 }
 
-func (c urlChecker) Check(s string) bool {
+func (c urlChecker) Check(s string) error {
 	_, err := c.client.Get(s)
-
-	if err != nil {
-		printToStderr(color.RedString("ERROR") + "\t" + s + "\t" + color.YellowString(err.Error()))
-	} else if err == nil && c.verbose {
-		printToStderr(color.GreenString("OK") + "\t" + s)
-	}
-
-	return err == nil
+	return err
 }
 
-func (c urlChecker) CheckMany(ss []string) bool {
-	bs := make(chan bool, len(ss))
+func (c urlChecker) CheckMany(ss []string, rc chan<- urlResult) {
+	wg := sync.WaitGroup{}
 
 	for _, s := range ss {
+		wg.Add(1)
 		go func(s string) {
-			bs <- c.Check(s)
+			rc <- urlResult{s, c.Check(s)}
+			wg.Done()
 		}(s)
 	}
 
-	ok := true
+	wg.Wait()
+	close(rc)
+}
 
-	for i := 0; i < len(ss); i++ {
-		ok = <-bs && ok
+type urlResult struct {
+	url string
+	err error
+}
+
+func (r urlResult) String() string {
+	if r.err == nil {
+		return color.GreenString("OK") + "\t" + r.url
 	}
 
-	return ok
+	return color.RedString("ERROR") + "\t" + r.url + "\t" + color.YellowString(r.err.Error())
 }

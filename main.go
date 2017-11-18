@@ -27,19 +27,29 @@ func main() {
 
 	args := getArgs()
 	fs := args["<filenames>"].([]string)
-	bs := make(chan bool, len(fs))
+	rc := make(chan fileResult, len(fs))
 	c := newFileChecker(5*time.Second, args["--verbose"].(bool))
 
 	for _, f := range fs {
 		go func(f string) {
-			bs <- c.Check(f)
+			rs, err := c.Check(f)
+
+			if err != nil {
+				rc <- fileResult{filename: f, err: err}
+			}
+
+			rc <- fileResult{filename: f, urlResults: rs}
 		}(f)
 	}
 
 	ok := true
 
 	for i := 0; i < len(fs); i++ {
-		ok = <-bs && ok
+		r := <-rc
+
+		ok = ok && r.Ok()
+
+		printToStderr(r.String())
 	}
 
 	if !ok {
