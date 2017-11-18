@@ -1,9 +1,6 @@
 package main
 
-import (
-	"os"
-	"time"
-)
+import "os"
 
 func main() {
 	args, err := getArgs()
@@ -15,7 +12,7 @@ func main() {
 
 	fs := args.filenames
 	rc := make(chan fileResult, len(fs))
-	c := newFileChecker(5 * time.Second)
+	c := newFileChecker(args.timeout)
 
 	go c.CheckMany(fs, rc)
 

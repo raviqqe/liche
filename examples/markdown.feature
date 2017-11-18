@@ -104,3 +104,11 @@ Feature: Markdown
     """
     When I successfully run `sh foo.sh`
     Then the stdout should contain exactly "5"
+
+  Scenario: Check a markdown file which contains a live link with timeout
+    Given a file named "foo.md" with:
+    """
+    [Google](https://google.com)
+    """
+    When I successfully run `linkcheck --timeout 10 foo.md`
+    Then the stdout should contain exactly ""

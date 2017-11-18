@@ -1,17 +1,24 @@
 package main
 
-import "github.com/docopt/docopt-go"
+import (
+	"strconv"
+	"time"
+
+	"github.com/docopt/docopt-go"
+)
 
 const usage = `Link checker for Markdown and HTML
 
 Usage:
-	linkcheck [-v] <filenames>...
+	linkcheck [-t <timeout>] [-v] <filenames>...
 
 Options:
-	-v, --verbose  Be verbose`
+	-v, --verbose  Be verbose
+	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds [default: 5]`
 
 type arguments struct {
 	filenames []string
+	timeout   time.Duration
 	verbose   bool
 }
 
@@ -22,5 +29,15 @@ func getArgs() (arguments, error) {
 		return arguments{}, err
 	}
 
-	return arguments{args["<filenames>"].([]string), args["--verbose"].(bool)}, nil
+	f, err := strconv.ParseFloat(args["--timeout"].(string), 64)
+
+	if err != nil {
+		return arguments{}, err
+	}
+
+	return arguments{
+		args["<filenames>"].([]string),
+		time.Duration(f) * time.Second,
+		args["--verbose"].(bool),
+	}, nil
 }
