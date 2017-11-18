@@ -1,15 +1,15 @@
 package main
 
 import (
+	"bytes"
 	"io/ioutil"
 	"net/url"
 	"os"
-	"strings"
 	"time"
 
-	"github.com/a8m/mark"
 	"github.com/docopt/docopt-go"
 	"golang.org/x/net/html"
+	blackfriday "gopkg.in/russross/blackfriday.v2"
 )
 
 func main() {
@@ -50,7 +50,7 @@ func checkFile(c urlChecker, f string) bool {
 		return false
 	}
 
-	n, err := html.Parse(strings.NewReader(mark.Render(string(bs))))
+	n, err := html.Parse(bytes.NewReader(blackfriday.Run(bs)))
 
 	if err != nil {
 		printToStderr(err.Error())
