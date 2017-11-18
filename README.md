@@ -48,7 +48,7 @@ Options:
 
 - HTML tags: `a`, `img`
 - HTML attributes: `href`, `src`
-- Schemes: `http`, `https`
+- URL schemes: `http`, `https`
 
 ## License
 
