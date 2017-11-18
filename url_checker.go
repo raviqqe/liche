@@ -2,9 +2,22 @@ package main
 
 import (
 	"net/http"
+	"runtime"
 	"sync"
 	"time"
 )
+
+const maxOpenFiles = 512
+
+var sem = make(chan bool, func() int {
+	n := 8 * runtime.NumCPU() // 8 is an empirical value.
+
+	if n < maxOpenFiles {
+		return n
+	}
+
+	return maxOpenFiles
+}())
 
 type urlChecker struct {
 	client http.Client
@@ -15,6 +28,9 @@ func newURLChecker(timeout time.Duration) urlChecker {
 }
 
 func (c urlChecker) Check(s string) error {
+	sem <- true
+	defer func() { <-sem }()
+
 	res, err := c.client.Get(s)
 
 	if err != nil && res != nil {
