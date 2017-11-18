@@ -1,6 +1,7 @@
 package main
 
 import (
+	"sort"
 	"strings"
 
 	"github.com/fatih/color"
@@ -19,13 +20,23 @@ func (r fileResult) String(verbose bool) string {
 		ss = append(ss, indent(color.RedString(r.err.Error())))
 	}
 
+	os := make([]string, 0, len(r.urlResults))
+	xs := make([]string, 0, len(r.urlResults))
+
 	for _, r := range r.urlResults {
-		if r.err != nil || verbose {
-			ss = append(ss, indent(r.String()))
+		s := indent(r.String())
+
+		if r.err != nil {
+			xs = append(xs, s)
+		} else if r.err == nil && verbose {
+			os = append(os, s)
 		}
 	}
 
-	return strings.Join(append([]string{r.filename}, ss...), "\n")
+	sort.Strings(os)
+	sort.Strings(xs)
+
+	return strings.Join(append([]string{r.filename}, append(ss, append(os, xs...)...)...), "\n")
 }
 
 func (r fileResult) Ok() bool {
