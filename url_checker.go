@@ -20,6 +20,11 @@ func (c urlChecker) Check(u string) error {
 	c.semaphore.Request()
 	defer c.semaphore.Release()
 
+	if c.timeout == 0 {
+		_, _, err := fasthttp.Get(nil, u)
+		return err
+	}
+
 	_, _, err := fasthttp.GetTimeout(nil, u, c.timeout)
 	return err
 }

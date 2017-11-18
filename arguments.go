@@ -27,7 +27,7 @@ Usage:
 
 Options:
 	-c, --concurrency <num-requests>  Set max number of concurrent HTTP requests [default: %v]
-	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds [default: 5]
+	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds
 	-v, --verbose  Be verbose`
 
 type arguments struct {
@@ -50,10 +50,14 @@ func getArgs() (arguments, error) {
 		return arguments{}, err
 	}
 
-	t, err := strconv.ParseFloat(args["--timeout"].(string), 64)
+	t := 0.0
 
-	if err != nil {
-		return arguments{}, err
+	if args["--timeout"] != nil {
+		t, err = strconv.ParseFloat(args["--timeout"].(string), 64)
+
+		if err != nil {
+			return arguments{}, err
+		}
 	}
 
 	return arguments{
