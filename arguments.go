@@ -9,16 +9,15 @@ import (
 	"github.com/docopt/docopt-go"
 )
 
-const maxConcurrency = 256
-
 var defaultConcurrency = func() int {
+	const max = 256
 	n := 8 * runtime.NumCPU() // 8 is an empirical value.
 
-	if n < maxConcurrency {
+	if n < max {
 		return n
 	}
 
-	return maxConcurrency
+	return max
 }()
 
 const usage = `Link checker for Markdown and HTML
