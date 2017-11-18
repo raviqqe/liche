@@ -42,6 +42,17 @@ Feature: Markdown
     Then the exit status should be 1
     And the stderr should contain "ERROR"
 
+  Scenario: Check a markdown file which contains live and dead links
+    Given a file named "foo.md" with:
+    """
+    [Google](https://google.com)
+    [The answer](https://some-say-the-answer-is-42.com)
+    """
+    When I run `linkcheck foo.md`
+    Then the exit status should be 1
+    And the stderr should not contain "OK"
+    And the stderr should contain "ERROR"
+
   Scenario: Check a markdown file which contains a live link in verbose mode
     Given a file named "foo.md" with:
     """
