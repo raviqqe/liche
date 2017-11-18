@@ -28,7 +28,7 @@ func (r fileResult) String(verbose bool) string {
 
 		if r.err != nil {
 			xs = append(xs, s)
-		} else if r.err == nil && verbose {
+		} else if verbose {
 			os = append(os, s)
 		}
 	}

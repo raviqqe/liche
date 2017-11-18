@@ -22,7 +22,7 @@ func main() {
 		if !r.Ok() {
 			ok = false
 			printToStderr(r.String(args.verbose))
-		} else if r.Ok() && args.verbose {
+		} else if args.verbose {
 			printToStderr(r.String(true))
 		}
 	}
