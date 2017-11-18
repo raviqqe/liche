@@ -23,23 +23,11 @@ func main() {
 	rc := make(chan fileResult, len(fs))
 	c := newFileChecker(5 * time.Second)
 
-	for _, f := range fs {
-		go func(f string) {
-			rs, err := c.Check(f)
-
-			if err != nil {
-				rc <- fileResult{filename: f, err: err}
-			}
-
-			rc <- fileResult{filename: f, urlResults: rs}
-		}(f)
-	}
+	go c.CheckMany(fs, rc)
 
 	ok := true
 
-	for i := 0; i < len(fs); i++ {
-		r := <-rc
-
+	for r := range rc {
 		if !r.Ok() {
 			ok = false
 			printToStderr(r.String(args.verbose))

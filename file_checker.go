@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	"net/url"
+	"sync"
 	"time"
 
 	"golang.org/x/net/html"
@@ -42,6 +43,29 @@ func (c fileChecker) Check(f string) ([]urlResult, error) {
 	}
 
 	return rs, nil
+}
+
+func (c fileChecker) CheckMany(fs []string, rc chan fileResult) {
+	wg := sync.WaitGroup{}
+
+	for _, f := range fs {
+		wg.Add(1)
+
+		go func(f string) {
+			rs, err := c.Check(f)
+
+			if err != nil {
+				rc <- fileResult{filename: f, err: err}
+			} else {
+				rc <- fileResult{filename: f, urlResults: rs}
+			}
+
+			wg.Done()
+		}(f)
+	}
+
+	wg.Wait()
+	close(rc)
 }
 
 func extractURLs(n *html.Node) []string {
