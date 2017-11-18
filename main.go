@@ -9,7 +9,7 @@ import (
 
 	"github.com/docopt/docopt-go"
 	"golang.org/x/net/html"
-	blackfriday "gopkg.in/russross/blackfriday.v2"
+	"gopkg.in/russross/blackfriday.v2"
 )
 
 func main() {
