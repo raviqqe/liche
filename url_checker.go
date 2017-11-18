@@ -1,34 +1,26 @@
 package main
 
 import (
-	"net/http"
 	"sync"
 	"time"
+
+	"github.com/valyala/fasthttp"
 )
 
 type urlChecker struct {
-	client    http.Client
+	timeout   time.Duration
 	semaphore semaphore
 }
 
 func newURLChecker(t time.Duration, s semaphore) urlChecker {
-	return urlChecker{http.Client{Timeout: t}, s}
+	return urlChecker{t, s}
 }
 
-func (c urlChecker) Check(s string) (resultErr error) {
+func (c urlChecker) Check(u string) error {
 	c.semaphore.Request()
 	defer c.semaphore.Release()
 
-	res, err := c.client.Get(s)
-
-	if err != nil && res != nil {
-		defer func() {
-			if err := res.Body.Close(); err != nil {
-				resultErr = err
-			}
-		}()
-	}
-
+	_, _, err := fasthttp.GetTimeout(nil, u, c.timeout)
 	return err
 }
 
