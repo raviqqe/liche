@@ -27,14 +27,18 @@ func newURLChecker(timeout time.Duration) urlChecker {
 	return urlChecker{http.Client{Timeout: timeout}}
 }
 
-func (c urlChecker) Check(s string) error {
+func (c urlChecker) Check(s string) (resultErr error) {
 	sem <- true
 	defer func() { <-sem }()
 
 	res, err := c.client.Get(s)
 
 	if err != nil && res != nil {
-		defer res.Body.Close()
+		defer func() {
+			if err := res.Body.Close(); err != nil {
+				resultErr = err
+			}
+		}()
 	}
 
 	return err
