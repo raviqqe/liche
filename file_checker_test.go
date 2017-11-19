@@ -49,11 +49,11 @@ func TestURLParse(t *testing.T) {
 }
 
 func TestIsURL(t *testing.T) {
-	for _, s := range []string{"http://google.com", "https://google.com"} {
+	for _, s := range []string{"http://google.com", "https://google.com", "file-path"} {
 		assert.True(t, isURL(s))
 	}
 
-	for _, s := range []string{"", "file-path"} {
+	for _, s := range []string{"ftp://foo.com", "file://file-path"} {
 		assert.False(t, isURL(s))
 	}
 }

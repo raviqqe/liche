@@ -31,7 +31,7 @@ func (c fileChecker) Check(f string) ([]urlResult, error) {
 	rc := make(chan urlResult, len(us))
 	rs := make([]urlResult, 0, len(us))
 
-	go c.urlChecker.CheckMany(us, rc)
+	go c.urlChecker.CheckMany(us, f, rc)
 
 	for r := range rc {
 		rs = append(rs, r)
@@ -120,7 +120,7 @@ func extractURLs(n *html.Node) []string {
 
 func isURL(s string) bool {
 	u, err := url.Parse(s)
-	return err == nil && (u.Scheme == "http" || u.Scheme == "https")
+	return err == nil && (u.Scheme == "" || u.Scheme == "http" || u.Scheme == "https")
 }
 
 func isHTMLFile(f string) bool {
