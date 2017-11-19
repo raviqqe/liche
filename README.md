@@ -6,7 +6,7 @@
 
 [![asciicast](https://asciinema.org/a/148134.png)](https://asciinema.org/a/148134)
 
-`liche` is a command to check links in Markdown and HTML files.
+`liche` is a command to check links' connectivity in Markdown and HTML files.
 It checks all `a` and `img` tags in specified files.
 
 ## Installation
