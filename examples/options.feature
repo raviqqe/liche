@@ -41,3 +41,12 @@ Feature: Options
     """
     When I successfully run `liche --concurrency 10 foo.md`
     Then the stdout should contain exactly ""
+
+  Scenario: Search files recursively
+    Given a directory named "foo"
+    And a file named "foo/bar.md" with:
+    """
+    [Google](https://google.com)
+    """
+    When I successfully run `liche --recursive -v foo`
+    Then the stderr should contain "OK"

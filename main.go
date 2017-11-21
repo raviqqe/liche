@@ -10,6 +10,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	if args.recursive {
+		args.filenames, err = listFilesRecursively(args.filenames)
+
+		if err != nil {
+			printToStderr(err.Error())
+			os.Exit(1)
+		}
+	}
+
 	rc := make(chan fileResult, len(args.filenames))
 	s := newSemaphore(args.concurrency)
 	c := newFileChecker(args.timeout, s)
@@ -30,4 +39,24 @@ func main() {
 	if !ok {
 		os.Exit(1)
 	}
+}
+
+func listFilesRecursively(fs []string) ([]string, error) {
+	gs := []string{}
+
+	for _, f := range fs {
+		i, err := os.Stat(f)
+
+		if err != nil {
+			return nil, err
+		}
+
+		if i.IsDir() {
+			gs = append(gs, listFiles(f)...)
+		} else {
+			gs = append(gs, f)
+		}
+	}
+
+	return gs, nil
 }

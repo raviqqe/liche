@@ -23,16 +23,18 @@ var defaultConcurrency = func() int {
 const usage = `Link checker for Markdown and HTML
 
 Usage:
-	liche [-c <num-requests>] [-t <timeout>] [-v] <filenames>...
+	liche [-c <num-requests>] [-r] [-t <timeout>] [-v] <filenames>...
 
 Options:
 	-c, --concurrency <num-requests>  Set max number of concurrent HTTP requests. [default: %v]
+	-r, --recursive  Search Markdown and HTML files recursively
 	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds. Disabled by default.
 	-v, --verbose  Be verbose.`
 
 type arguments struct {
 	filenames   []string
 	concurrency int
+	recursive   bool
 	timeout     time.Duration
 	verbose     bool
 }
@@ -63,6 +65,7 @@ func getArgs() (arguments, error) {
 	return arguments{
 		args["<filenames>"].([]string),
 		int(c),
+		args["--recursive"].(bool),
 		time.Duration(t) * time.Second,
 		args["--verbose"].(bool),
 	}, nil
