@@ -41,6 +41,18 @@ func TestMarkupFileFinderFindWithDirectory(t *testing.T) {
 	assert.NotEqual(t, nil, err)
 }
 
+func TestMarkupFileFinderFindWithNonExistentFile(t *testing.T) {
+	m := newMarkupFileFinder()
+	m.Find([]string{"foo.md"}, false)
+
+	assert.Equal(t, 1, len(m.Errors()))
+	assert.Equal(t, 0, len(m.Filenames()))
+
+	err := <-m.Errors()
+
+	assert.NotEqual(t, nil, err)
+}
+
 func TestMarkupFileFinderListDirectory(t *testing.T) {
 	m := newMarkupFileFinder()
 	m.listDirectory("test")
