@@ -41,8 +41,8 @@ type arguments struct {
 	verbose      bool
 }
 
-func getArguments() (arguments, error) {
-	args, err := docopt.Parse(fmt.Sprintf(usage, defaultConcurrency), nil, true, "liche", true)
+func getArguments(argv []string) (arguments, error) {
+	args, err := docopt.Parse(fmt.Sprintf(usage, defaultConcurrency), argv, true, "liche", true)
 
 	if err != nil {
 		return arguments{}, err
@@ -54,11 +54,11 @@ func getArguments() (arguments, error) {
 		return arguments{}, err
 	}
 
-	t := 0.0
-
 	if args["--document-root"] == nil {
 		args["--document-root"] = ""
 	}
+
+	t := 0.0
 
 	if args["--timeout"] != nil {
 		t, err = strconv.ParseFloat(args["--timeout"].(string), 64)

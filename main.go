@@ -3,7 +3,7 @@ package main
 import "os"
 
 func main() {
-	args, err := getArguments()
+	args, err := getArguments(nil)
 
 	if err != nil {
 		printToStderr(err.Error())
