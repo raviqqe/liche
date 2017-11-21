@@ -1,6 +1,7 @@
 # liche
 
 [![Circle CI](https://img.shields.io/circleci/project/github/raviqqe/liche.svg?style=flat-square)](https://circleci.com/gh/raviqqe/liche)
+[![Codecov](https://img.shields.io/codecov/c/github/raviqqe/liche.svg?style=flat-square)](https://codecov.io/gh/raviqqe/liche)
 [![Go Report Card](https://goreportcard.com/badge/github.com/raviqqe/liche?style=flat-square)](https://goreportcard.com/report/github.com/raviqqe/liche)
 [![License](https://img.shields.io/github/license/raviqqe/liche.svg?style=flat-square)](LICENSE)
 
