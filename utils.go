@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/fatih/color"
@@ -33,50 +31,4 @@ func fail(err error) {
 
 func indent(s string) string {
 	return text.Indent(s, "\t")
-}
-
-func listDirectory(d string, fc chan<- string) error {
-	return filepath.Walk(d, func(f string, i os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		b, err := regexp.MatchString("(^\\.)|(/\\.)", f)
-
-		if err != nil {
-			return err
-		}
-
-		if !i.IsDir() && !b && isMarkupFile(f) {
-			fc <- f
-		}
-
-		return nil
-	})
-}
-
-func findMarkupFiles(fs []string, recursive bool, fc chan<- string, ec chan<- error) {
-	for _, f := range fs {
-		i, err := os.Stat(f)
-
-		if err != nil {
-			ec <- err
-			continue
-		}
-
-		if i.IsDir() && recursive {
-			err := listDirectory(f, fc)
-
-			if err != nil {
-				ec <- err
-			}
-		} else if i.IsDir() {
-			ec <- fmt.Errorf("%v is not a file", f)
-		} else {
-			fc <- f
-		}
-	}
-
-	close(fc)
-	close(ec)
 }

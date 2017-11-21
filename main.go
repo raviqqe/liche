@@ -12,15 +12,14 @@ func main() {
 		fail(err)
 	}
 
-	fc := make(chan string, maxOpenFiles)
-	ec := make(chan error, 64)
+	m := newMarkupFileFinder()
 	wg := sync.WaitGroup{}
 
-	go findMarkupFiles(args.filenames, args.recursive, fc, ec)
+	go m.Find(args.filenames, args.recursive)
 
 	wg.Add(1)
 	go func() {
-		for e := range ec {
+		for e := range m.Errors() {
 			fail(e)
 		}
 
@@ -31,7 +30,7 @@ func main() {
 	s := newSemaphore(args.concurrency)
 	c := newFileChecker(args.timeout, args.documentRoot, s)
 
-	go c.CheckMany(fc, rc)
+	go c.CheckMany(m.Filenames(), rc)
 
 	ok := true
 
