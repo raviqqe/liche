@@ -2,7 +2,7 @@ Feature: Markdown
   Scenario: Check an empty markdown file
     Given a file named "foo.md" with ""
     When I successfully run `liche foo.md`
-    Then the stdout should contain exactly ""
+    Then the stderr should contain exactly ""
 
   Scenario: Check a markdown file
     Given a file named "foo.md" with:
@@ -23,7 +23,7 @@ Feature: Markdown
     ```
     """
     When I successfully run `liche foo.md`
-    Then the stdout should contain exactly ""
+    Then the stderr should contain exactly ""
 
   Scenario: Check a markdown file which contains a live link
     Given a file named "foo.md" with:
@@ -31,7 +31,7 @@ Feature: Markdown
     [Google](https://google.com)
     """
     When I successfully run `liche foo.md`
-    Then the stdout should contain exactly ""
+    Then the stderr should contain exactly ""
 
   Scenario: Check a markdown file which contains a dead link
     Given a file named "foo.md" with:
@@ -63,7 +63,7 @@ Feature: Markdown
     [Yahoo](https://yahoo.com)
     """
     When I successfully run `liche foo.md bar.md`
-    Then the stdout should contain exactly ""
+    Then the stderr should contain exactly ""
 
   Scenario: Check images and links
     Given a file named "foo.md" with:

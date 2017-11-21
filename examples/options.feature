@@ -32,7 +32,7 @@ Feature: Options
     [Google](https://google.com)
     """
     When I successfully run `liche --timeout 10 foo.md`
-    Then the stdout should contain exactly ""
+    Then the stderr should contain exactly ""
 
   Scenario: Set concurrency
     Given a file named "foo.md" with:
@@ -40,7 +40,7 @@ Feature: Options
     [Google](https://google.com)
     """
     When I successfully run `liche --concurrency 10 foo.md`
-    Then the stdout should contain exactly ""
+    Then the stderr should contain exactly ""
 
   Scenario: Search files recursively
     Given a directory named "foo"
