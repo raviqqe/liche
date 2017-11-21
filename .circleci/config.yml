@@ -20,7 +20,9 @@ jobs:
           command: rake lint
       - run:
           name: Unit Test
-          command: rake unit_test
+          command: |
+            rake unit_test
+            curl -sSL https://codecov.io/bash | bash
       - run:
           name: Command Test
           command: rake command_test
