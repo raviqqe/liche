@@ -10,4 +10,8 @@ func TestIsMarkupFile(t *testing.T) {
 	for _, f := range []string{"foo.md", "foo.html", "foo.htm", "foo/bar.md"} {
 		assert.True(t, isMarkupFile(f))
 	}
+
+	for _, f := range []string{"foo", "foo.m", "bar/foo"} {
+		assert.False(t, isMarkupFile(f))
+	}
 }
