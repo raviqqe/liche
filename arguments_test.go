@@ -65,7 +65,11 @@ func TestGetArguments(t *testing.T) {
 }
 
 func TestGetArgumentsWithInvalidArgv(t *testing.T) {
-	for _, argv := range [][]string{{"-c", "3.14", "file"}, {"-t", "foo", "file"}} {
+	for _, argv := range [][]string{
+		{"-c", "3.14", "file"},
+		{"-t", "foo", "file"},
+		{"-c", "-t", "file"},
+	} {
 		_, err := getArguments(argv)
 		assert.NotEqual(t, nil, err)
 	}
