@@ -76,6 +76,36 @@ func TestFileCheckerCheckMany(t *testing.T) {
 	}
 }
 
+func TestFileCheckerCheckManyWithInvalidFiles(t *testing.T) {
+	c := newFileChecker(0, "", newSemaphore(maxOpenFiles))
+
+	for _, fs := range [][]string{
+		{"test/absolute_path.md"},
+	} {
+		fc := make(chan string, len(fs))
+
+		for _, f := range fs {
+			fc <- f
+		}
+
+		close(fc)
+
+		rc := make(chan fileResult, maxOpenFiles)
+
+		c.CheckMany(fc, rc)
+
+		assert.Equal(t, len(fs), len(rc))
+
+		ok := true
+
+		for r := range rc {
+			ok = ok && r.Ok()
+		}
+
+		assert.False(t, ok)
+	}
+}
+
 func TestFileCheckerExtractURLs(t *testing.T) {
 	c := newFileChecker(0, "", newSemaphore(42))
 
