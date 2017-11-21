@@ -47,6 +47,35 @@ func TestFileCheckerCheck(t *testing.T) {
 	}
 }
 
+func TestFileCheckerCheckMany(t *testing.T) {
+	c := newFileChecker(0, "", newSemaphore(maxOpenFiles))
+
+	for _, fs := range [][]string{
+		{"README.md"},
+		{"test/foo.md"},
+		{"test/foo.html"},
+		{"README.md", "test/foo.md", "test/foo.html"},
+	} {
+		fc := make(chan string, len(fs))
+
+		for _, f := range fs {
+			fc <- f
+		}
+
+		close(fc)
+
+		rc := make(chan fileResult, maxOpenFiles)
+
+		c.CheckMany(fc, rc)
+
+		assert.Equal(t, len(fs), len(rc))
+
+		for r := range rc {
+			assert.True(t, r.Ok())
+		}
+	}
+}
+
 func TestFileCheckerExtractURLs(t *testing.T) {
 	c := newFileChecker(0, "", newSemaphore(42))
 
