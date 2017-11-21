@@ -9,6 +9,44 @@ import (
 	"golang.org/x/net/html"
 )
 
+func TestFileCheckerCheck(t *testing.T) {
+	c := newFileChecker(0, "", newSemaphore(1024))
+
+	for _, f := range []string{"README.md", "test/foo.md", "test/foo.html"} {
+		rs, err := c.Check(f)
+
+		assert.NotEqual(t, 0, len(rs))
+		assert.Equal(t, nil, err)
+
+		for _, r := range rs {
+			assert.Equal(t, nil, r.err)
+		}
+	}
+
+	for _, f := range []string{"READYOU.md", "test"} {
+		rs, err := c.Check(f)
+
+		assert.Equal(t, ([]urlResult)(nil), rs)
+		assert.NotEqual(t, nil, err)
+	}
+
+	for _, f := range []string{"test/bad.md", "test/bad.html"} {
+		rs, err := c.Check(f)
+
+		assert.Equal(t, nil, err)
+
+		ok := true
+
+		for _, r := range rs {
+			if r.err != nil {
+				ok = false
+			}
+		}
+
+		assert.False(t, ok)
+	}
+}
+
 func TestFileCheckerExtractURLs(t *testing.T) {
 	c := newFileChecker(0, "", newSemaphore(42))
 
