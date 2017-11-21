@@ -34,8 +34,8 @@ Options:
 type arguments struct {
 	filenames   []string
 	concurrency int
-	recursive   bool
 	timeout     time.Duration
+	recursive   bool
 	verbose     bool
 }
 
@@ -65,8 +65,8 @@ func getArgs() (arguments, error) {
 	return arguments{
 		args["<filenames>"].([]string),
 		int(c),
-		args["--recursive"].(bool),
 		time.Duration(t) * time.Second,
+		args["--recursive"].(bool),
 		args["--verbose"].(bool),
 	}, nil
 }

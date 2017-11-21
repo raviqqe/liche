@@ -52,7 +52,13 @@ func listFilesRecursively(fs []string) ([]string, error) {
 		}
 
 		if i.IsDir() {
-			gs = append(gs, listFiles(f)...)
+			fs, err := listFiles(f)
+
+			if err != nil {
+				return nil, err
+			}
+
+			gs = append(gs, fs...)
 		} else {
 			gs = append(gs, f)
 		}

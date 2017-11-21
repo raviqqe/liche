@@ -27,32 +27,30 @@ func indent(s string) string {
 	return text.Indent(s, "\t")
 }
 
-func listFiles(d string) []string {
-	fc := make(chan string, 1024)
-
-	go func() {
-		filepath.Walk(d, func(p string, f os.FileInfo, err error) error {
-			b, err := regexp.MatchString("(^\\.)|(/\\.)", p)
-
-			if err != nil {
-				return err
-			}
-
-			if !f.IsDir() && !b && isMarkupFile(p) {
-				fc <- p
-			}
-
-			return nil
-		})
-
-		close(fc)
-	}()
-
+func listFiles(d string) ([]string, error) {
 	fs := []string{}
 
-	for f := range fc {
-		fs = append(fs, f)
+	err := filepath.Walk(d, func(f string, i os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		b, err := regexp.MatchString("(^\\.)|(/\\.)", f)
+
+		if err != nil {
+			return err
+		}
+
+		if !i.IsDir() && !b && isMarkupFile(f) {
+			fs = append(fs, f)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
 	}
 
-	return fs
+	return fs, nil
 }

@@ -8,8 +8,9 @@ import (
 )
 
 func TestListFiles(t *testing.T) {
-	fs := listFiles(".")
+	fs, err := listFiles(".")
 
+	assert.Equal(t, nil, err)
 	assert.NotEqual(t, 0, len(fs))
 
 	for _, f := range fs {
