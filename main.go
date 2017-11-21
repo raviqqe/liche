@@ -2,6 +2,8 @@ package main
 
 import "os"
 
+const filesCapacity = 1024
+
 func main() {
 	args, err := getArguments(nil)
 
@@ -10,11 +12,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	fc := make(chan string, 1024)
+	fc := make(chan string, filesCapacity)
 
 	go findMarkupFiles(args.filenames, args.recursive, fc)
 
-	rc := make(chan fileResult, 1024)
+	rc := make(chan fileResult, filesCapacity)
 	s := newSemaphore(args.concurrency)
 	c := newFileChecker(args.timeout, args.documentRoot, s)
 
