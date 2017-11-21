@@ -90,6 +90,7 @@ func TestFileCheckerExtractURLsWithInvalidHTML(t *testing.T) {
 
 	for _, s := range []string{
 		`<a href="/foo.html">link</a>`,
+		`<img src="/foo.png" />`,
 	} {
 		n, err := html.Parse(strings.NewReader(s))
 
