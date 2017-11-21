@@ -40,3 +40,39 @@ Feature: HTML
     """
     When I successfully run `liche foo.html`
     Then the stderr should contain exactly ""
+
+  Scenario: Set document root
+    Given a file named "foo.html" with:
+    """
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>My title</title>
+    </head>
+    <body>
+      <div>
+        <a href="/foo.html">Google</a>
+      </div>
+    </body>
+    </html>
+    """
+    When I successfully run `liche --document-root . foo.html`
+    Then the stderr should contain exactly ""
+
+  Scenario: Fail without document root
+    Given a file named "foo.html" with:
+    """
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>My title</title>
+    </head>
+    <body>
+      <div>
+        <a href="/foo.html">Google</a>
+      </div>
+    </body>
+    </html>
+    """
+    When I run `liche foo.html`
+    Then the exit status should be 1
