@@ -16,7 +16,7 @@ func main() {
 
 	rc := make(chan fileResult, 1024)
 	s := newSemaphore(args.concurrency)
-	c := newFileChecker(args.timeout, s)
+	c := newFileChecker(args.timeout, args.documentRoot, s)
 
 	go c.CheckMany(fc, rc)
 

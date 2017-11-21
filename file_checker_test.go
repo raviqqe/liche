@@ -9,35 +9,41 @@ import (
 	"golang.org/x/net/html"
 )
 
-func TestExtractURLs(t *testing.T) {
-	for _, c := range []struct {
+func TestFileCheckerExtractURLs(t *testing.T) {
+	c := newFileChecker(0, "", newSemaphore(42))
+
+	for _, x := range []struct {
 		html    string
 		numURLs int
 	}{
 		{`<a href="https://google.com">Google</a>`, 1},
 		{
 			`
-				<div>
-					<a href="https://google.com">Google</a>
-					<a href="https://google.com">Google</a>
-				</div>
+			<div>
+			<a href="https://google.com">Google</a>
+			<a href="https://google.com">Google</a>
+			</div>
 			`,
 			1,
 		},
 		{
 			`
-				<div>
-					<a href="https://google.com">Google</a>
-					<a href="https://yahoo.com">Yahoo!</a>
-				</div>
+			<div>
+			<a href="https://google.com">Google</a>
+			<a href="https://yahoo.com">Yahoo!</a>
+			</div>
 			`,
 			2,
 		},
 	} {
-		n, err := html.Parse(strings.NewReader(c.html))
+		n, err := html.Parse(strings.NewReader(x.html))
 
 		assert.Equal(t, nil, err)
-		assert.Equal(t, c.numURLs, len(extractURLs(n)))
+
+		us, err := c.extractURLs(n)
+
+		assert.Equal(t, nil, err)
+		assert.Equal(t, x.numURLs, len(us))
 	}
 }
 
