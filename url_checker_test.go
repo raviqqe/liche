@@ -14,7 +14,7 @@ func TestURLCheckerCheck(t *testing.T) {
 		assert.Equal(t, nil, c.Check(u, "README.md"))
 	}
 
-	for _, u := range []string{"https://hey-hey-hi-google.com", "READYOU.md"} {
+	for _, u := range []string{"https://hey-hey-hi-google.com", "READYOU.md", "://"} {
 		assert.NotEqual(t, nil, c.Check(u, "README.md"))
 	}
 }
@@ -26,7 +26,7 @@ func TestURLCheckerCheckWithTimeout(t *testing.T) {
 		assert.Equal(t, nil, c.Check(u, "README.md"))
 	}
 
-	for _, u := range []string{"https://hey-hey-hi-google.com", "READYOU.md"} {
+	for _, u := range []string{"https://hey-hey-hi-google.com", "READYOU.md", "://"} {
 		assert.NotEqual(t, nil, c.Check(u, "README.md"))
 	}
 }
