@@ -55,27 +55,28 @@ func listDirectory(d string, fc chan<- string) error {
 	})
 }
 
-func findMarkupFiles(fs []string, recursive bool, fc chan<- string) {
+func findMarkupFiles(fs []string, recursive bool, fc chan<- string, ec chan<- error) {
 	for _, f := range fs {
 		i, err := os.Stat(f)
 
 		if err != nil {
-			fail(err)
+			ec <- err
+			continue
 		}
 
 		if i.IsDir() && recursive {
 			err := listDirectory(f, fc)
 
 			if err != nil {
-				fail(err)
+				ec <- err
 			}
-
 		} else if i.IsDir() {
-			fail(fmt.Errorf("%v is not a file", f))
+			ec <- fmt.Errorf("%v is not a file", f)
 		} else {
 			fc <- f
 		}
 	}
 
 	close(fc)
+	close(ec)
 }
