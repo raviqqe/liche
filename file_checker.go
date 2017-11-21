@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"io/ioutil"
 	"net/url"
-	"strings"
 	"sync"
 	"time"
 
@@ -121,8 +120,4 @@ func extractURLs(n *html.Node) []string {
 func isURL(s string) bool {
 	u, err := url.Parse(s)
 	return err == nil && (u.Scheme == "" || u.Scheme == "http" || u.Scheme == "https")
-}
-
-func isHTMLFile(f string) bool {
-	return strings.HasSuffix(f, ".html") || strings.HasSuffix(f, ".htm")
 }

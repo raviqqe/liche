@@ -15,3 +15,13 @@ func TestIsMarkupFile(t *testing.T) {
 		assert.False(t, isMarkupFile(f))
 	}
 }
+
+func TestIsHTMLFile(t *testing.T) {
+	for _, f := range []string{"foo.html", "foo.htm", "foo/bar.html"} {
+		assert.True(t, isHTMLFile(f))
+	}
+
+	for _, f := range []string{"foo", "foo.md", "bar/foo"} {
+		assert.False(t, isHTMLFile(f))
+	}
+}
