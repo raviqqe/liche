@@ -1,13 +1,18 @@
 package main
 
 import (
+	"sort"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestStringSetToSlice(t *testing.T) {
-	assert.Equal(t, []string{"foo", "bar"}, stringSetToSlice(map[string]bool{"foo": true, "bar": false}))
+	ss := stringSetToSlice(map[string]bool{"foo": true, "bar": false})
+
+	sort.Strings(ss)
+
+	assert.Equal(t, []string{"bar", "foo"}, ss)
 }
 
 func TestIndent(t *testing.T) {
