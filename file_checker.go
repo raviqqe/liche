@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	"net/url"
+	"strings"
 	"sync"
 	"time"
 
@@ -118,6 +119,10 @@ func extractURLs(n *html.Node) []string {
 }
 
 func isURL(s string) bool {
+	if strings.HasPrefix(s, "#") {
+		return false
+	}
+
 	u, err := url.Parse(s)
 	return err == nil && (u.Scheme == "" || u.Scheme == "http" || u.Scheme == "https")
 }

@@ -53,7 +53,7 @@ func TestIsURL(t *testing.T) {
 		assert.True(t, isURL(s))
 	}
 
-	for _, s := range []string{"ftp://foo.com", "file://file-path"} {
+	for _, s := range []string{"ftp://foo.com", "file://file-path", "#foo"} {
 		assert.False(t, isURL(s))
 	}
 }
