@@ -31,18 +31,14 @@ Options:
 	-v, --verbose  Be verbose.
 ```
 
-### Markdown
+## Examples
 
 ```sh
 > liche file.md
 > liche file1.md file2.md
-```
-
-### HTML
-
-```sh
 > liche file.html
 > liche file1.html file2.html
+> liche -r directory # Search all Markdown and HTML files recursively.
 ```
 
 ## Supported properties
