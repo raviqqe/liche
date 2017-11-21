@@ -41,7 +41,7 @@ type arguments struct {
 	verbose      bool
 }
 
-func getArgs() (arguments, error) {
+func getArguments() (arguments, error) {
 	args, err := docopt.Parse(fmt.Sprintf(usage, defaultConcurrency), nil, true, "liche", true)
 
 	if err != nil {
