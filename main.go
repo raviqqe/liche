@@ -1,8 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"strings"
 	"sync"
+
+	"github.com/fatih/color"
 )
 
 func main() {
@@ -48,4 +52,14 @@ func main() {
 	if !ok {
 		os.Exit(1)
 	}
+}
+
+func printToStderr(xs ...interface{}) {
+	fmt.Fprintln(os.Stderr, xs...)
+}
+
+func fail(err error) {
+	s := err.Error()
+	printToStderr(color.RedString(strings.ToUpper(s[:1]) + s[1:]))
+	os.Exit(1)
 }
