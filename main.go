@@ -5,8 +5,6 @@ import (
 	"sync"
 )
 
-const filesCapacity = 1024
-
 func main() {
 	args, err := getArguments(nil)
 
@@ -14,7 +12,7 @@ func main() {
 		fail(err)
 	}
 
-	fc := make(chan string, filesCapacity)
+	fc := make(chan string, maxOpenFiles)
 	ec := make(chan error, 64)
 	wg := sync.WaitGroup{}
 
@@ -29,7 +27,7 @@ func main() {
 		wg.Done()
 	}()
 
-	rc := make(chan fileResult, filesCapacity)
+	rc := make(chan fileResult, maxOpenFiles)
 	s := newSemaphore(args.concurrency)
 	c := newFileChecker(args.timeout, args.documentRoot, s)
 
