@@ -23,10 +23,11 @@ go get -u github.com/raviqqe/liche
 Link checker for Markdown and HTML
 
 Usage:
-	liche [-c <num-requests>] [-r] [-t <timeout>] [-v] <filenames>...
+	liche [-c <num-requests>] [-d <directory>] [-r] [-t <timeout>] [-v] <filenames>...
 
 Options:
 	-c, --concurrency <num-requests>  Set max number of concurrent HTTP requests. [default: 32]
+	-d, --document-root <directory>  Set document root directory for absolute paths.
 	-r, --recursive  Search Markdown and HTML files recursively
 	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds. Disabled by default.
 	-v, --verbose  Be verbose.
