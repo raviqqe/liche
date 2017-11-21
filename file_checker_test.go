@@ -20,8 +20,8 @@ func TestFileCheckerExtractURLs(t *testing.T) {
 		{
 			`
 			<div>
-			<a href="https://google.com">Google</a>
-			<a href="https://google.com">Google</a>
+				<a href="https://google.com">Google</a>
+				<a href="https://google.com">Google</a>
 			</div>
 			`,
 			1,
@@ -29,8 +29,8 @@ func TestFileCheckerExtractURLs(t *testing.T) {
 		{
 			`
 			<div>
-			<a href="https://google.com">Google</a>
-			<a href="https://yahoo.com">Yahoo!</a>
+				<a href="https://google.com">Google</a>
+				<a href="https://yahoo.com">Yahoo!</a>
 			</div>
 			`,
 			2,
