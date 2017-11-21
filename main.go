@@ -10,20 +10,15 @@ func main() {
 		os.Exit(1)
 	}
 
-	if args.recursive {
-		args.filenames, err = listFilesRecursively(args.filenames)
+	fc := make(chan string, 1024)
 
-		if err != nil {
-			printToStderr(err.Error())
-			os.Exit(1)
-		}
-	}
+	go findMarkupFiles(args.filenames, args.recursive, fc)
 
-	rc := make(chan fileResult, len(args.filenames))
+	rc := make(chan fileResult, 1024)
 	s := newSemaphore(args.concurrency)
 	c := newFileChecker(args.timeout, s)
 
-	go c.CheckMany(args.filenames, rc)
+	go c.CheckMany(fc, rc)
 
 	ok := true
 
@@ -39,30 +34,4 @@ func main() {
 	if !ok {
 		os.Exit(1)
 	}
-}
-
-func listFilesRecursively(fs []string) ([]string, error) {
-	gs := []string{}
-
-	for _, f := range fs {
-		i, err := os.Stat(f)
-
-		if err != nil {
-			return nil, err
-		}
-
-		if i.IsDir() {
-			fs, err := listFiles(f)
-
-			if err != nil {
-				return nil, err
-			}
-
-			gs = append(gs, fs...)
-		} else {
-			gs = append(gs, f)
-		}
-	}
-
-	return gs, nil
 }

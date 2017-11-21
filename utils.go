@@ -5,7 +5,9 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 
+	"github.com/fatih/color"
 	"github.com/kr/text"
 )
 
@@ -23,14 +25,18 @@ func printToStderr(xs ...interface{}) {
 	fmt.Fprintln(os.Stderr, xs...)
 }
 
+func fail(err error) {
+	s := err.Error()
+	printToStderr(color.RedString(strings.ToUpper(s[:1]) + s[1:]))
+	os.Exit(1)
+}
+
 func indent(s string) string {
 	return text.Indent(s, "\t")
 }
 
-func listFiles(d string) ([]string, error) {
-	fs := []string{}
-
-	err := filepath.Walk(d, func(f string, i os.FileInfo, err error) error {
+func listDirectory(d string, fc chan<- string) error {
+	return filepath.Walk(d, func(f string, i os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -42,15 +48,34 @@ func listFiles(d string) ([]string, error) {
 		}
 
 		if !i.IsDir() && !b && isMarkupFile(f) {
-			fs = append(fs, f)
+			fc <- f
 		}
 
 		return nil
 	})
+}
 
-	if err != nil {
-		return nil, err
+func findMarkupFiles(fs []string, recursive bool, fc chan<- string) {
+	for _, f := range fs {
+		i, err := os.Stat(f)
+
+		if err != nil {
+			fail(err)
+		}
+
+		if i.IsDir() && recursive {
+			err := listDirectory(f, fc)
+
+			if err != nil {
+				fail(err)
+			}
+
+		} else if i.IsDir() {
+			fail(fmt.Errorf("%v is not a file", f))
+		} else {
+			fc <- f
+		}
 	}
 
-	return fs, nil
+	close(fc)
 }

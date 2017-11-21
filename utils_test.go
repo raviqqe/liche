@@ -7,13 +7,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestListFiles(t *testing.T) {
-	fs, err := listFiles(".")
+func TestListDirectory(t *testing.T) {
+	fc := make(chan string, 1024)
+	err := listDirectory(".", fc)
+	close(fc)
 
 	assert.Equal(t, nil, err)
-	assert.NotEqual(t, 0, len(fs))
+	assert.NotEqual(t, 0, len(fc))
 
-	for _, f := range fs {
+	for f := range fc {
 		i, err := os.Stat(f)
 
 		assert.True(t, isMarkupFile(f))
