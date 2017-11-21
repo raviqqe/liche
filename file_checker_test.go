@@ -85,6 +85,23 @@ func TestFileCheckerExtractURLs(t *testing.T) {
 	}
 }
 
+func TestFileCheckerExtractURLsWithInvalidHTML(t *testing.T) {
+	c := newFileChecker(0, "", newSemaphore(42))
+
+	for _, s := range []string{
+		`<a href="/foo.html">link</a>`,
+	} {
+		n, err := html.Parse(strings.NewReader(s))
+
+		assert.Equal(t, nil, err)
+
+		us, err := c.extractURLs(n)
+
+		assert.Equal(t, ([]string)(nil), us)
+		assert.NotEqual(t, nil, err)
+	}
+}
+
 func TestFileCheckerResolveURL(t *testing.T) {
 	f := newFileChecker(0, "", newSemaphore(1024))
 
