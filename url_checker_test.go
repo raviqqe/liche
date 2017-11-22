@@ -47,21 +47,25 @@ func TestURLCheckerCheckMany(t *testing.T) {
 func TestURLCheckerResolveURL(t *testing.T) {
 	f := newURLChecker(0, "", newSemaphore(1024))
 
-	for _, c := range []struct{ source, target string }{
-		{"foo", "foo"},
-		{"https://google.com", "https://google.com"},
+	for _, c := range []struct {
+		source, target string
+		local          bool
+	}{
+		{"foo", "foo", true},
+		{"https://google.com", "https://google.com", false},
 	} {
-		u, err := f.resolveURL(c.source, "foo.md")
+		u, local, err := f.resolveURL(c.source, "foo.md")
 
 		assert.Equal(t, nil, err)
 		assert.Equal(t, c.target, u)
+		assert.Equal(t, c.local, local)
 	}
 }
 
 func TestURLCheckerResolveURLWithAbsolutePath(t *testing.T) {
 	f := newURLChecker(0, "", newSemaphore(1024))
 
-	u, err := f.resolveURL("/foo", "foo.md")
+	u, _, err := f.resolveURL("/foo", "foo.md")
 
 	assert.NotEqual(t, nil, err)
 	assert.Equal(t, "", u)
@@ -70,14 +74,18 @@ func TestURLCheckerResolveURLWithAbsolutePath(t *testing.T) {
 func TestURLCheckerResolveURLWithDocumentRoot(t *testing.T) {
 	f := newURLChecker(0, "foo", newSemaphore(1024))
 
-	for _, c := range []struct{ source, target string }{
-		{"foo", "foo"},
-		{"https://google.com", "https://google.com"},
-		{"/foo", "foo/foo"},
+	for _, c := range []struct {
+		source, target string
+		local          bool
+	}{
+		{"foo", "foo", true},
+		{"https://google.com", "https://google.com", false},
+		{"/foo", "foo/foo", true},
 	} {
-		u, err := f.resolveURL(c.source, "foo.md")
+		u, local, err := f.resolveURL(c.source, "foo.md")
 
 		assert.Equal(t, nil, err)
 		assert.Equal(t, c.target, u)
+		assert.Equal(t, c.local, local)
 	}
 }

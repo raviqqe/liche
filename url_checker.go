@@ -22,20 +22,14 @@ func newURLChecker(t time.Duration, d string, s semaphore) urlChecker {
 }
 
 func (c urlChecker) Check(u string, f string) error {
-	u, err := c.resolveURL(u, f)
+	u, local, err := c.resolveURL(u, f)
 
 	if err != nil {
 		return err
 	}
 
-	uu, err := url.Parse(u)
-
-	if err != nil {
-		return err
-	}
-
-	if uu.Scheme == "" {
-		_, err := os.Stat(uu.Path)
+	if local {
+		_, err := os.Stat(u)
 		return err
 	}
 
@@ -67,24 +61,24 @@ func (c urlChecker) CheckMany(us []string, f string, rc chan<- urlResult) {
 	close(rc)
 }
 
-func (c urlChecker) resolveURL(u string, f string) (string, error) {
+func (c urlChecker) resolveURL(u string, f string) (string, bool, error) {
 	uu, err := url.Parse(u)
 
 	if err != nil {
-		return "", err
+		return "", false, err
 	}
 
 	if uu.Scheme != "" {
-		return u, nil
+		return u, false, nil
 	}
 
 	if !path.IsAbs(uu.Path) {
-		return path.Join(path.Dir(f), uu.Path), nil
+		return path.Join(path.Dir(f), uu.Path), true, nil
 	}
 
 	if c.documentRoot == "" {
-		return "", errors.New("document root directory is not specified")
+		return "", false, errors.New("document root directory is not specified")
 	}
 
-	return path.Join(c.documentRoot, uu.Path), nil
+	return path.Join(c.documentRoot, uu.Path), true, nil
 }
