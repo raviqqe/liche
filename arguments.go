@@ -2,23 +2,13 @@ package main
 
 import (
 	"fmt"
-	"runtime"
 	"strconv"
 	"time"
 
 	"github.com/docopt/docopt-go"
 )
 
-var defaultConcurrency = func() int {
-	const max = maxOpenFiles / 2
-	n := 8 * runtime.NumCPU() // 8 is an empirical value.
-
-	if n < max {
-		return n
-	}
-
-	return max
-}()
+const defaultConcurrency = maxOpenFiles / 2
 
 const usage = `Link checker for Markdown and HTML
 
