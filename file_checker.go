@@ -17,14 +17,15 @@ import (
 type fileChecker struct {
 	urlChecker   urlChecker
 	documentRoot string
+	semaphore    semaphore
 }
 
 func newFileChecker(timeout time.Duration, r string, s semaphore) fileChecker {
-	return fileChecker{newURLChecker(timeout, s), r}
+	return fileChecker{newURLChecker(timeout, s), r, s}
 }
 
 func (c fileChecker) Check(f string) ([]urlResult, error) {
-	n, err := parseFile(f)
+	n, err := c.parseFile(f)
 
 	if err != nil {
 		return nil, err
@@ -69,8 +70,10 @@ func (c fileChecker) CheckMany(fc <-chan string, rc chan<- fileResult) {
 	close(rc)
 }
 
-func parseFile(f string) (*html.Node, error) {
+func (c fileChecker) parseFile(f string) (*html.Node, error) {
+	c.semaphore.Request()
 	bs, err := ioutil.ReadFile(f)
+	c.semaphore.Release()
 
 	if err != nil {
 		return nil, err
