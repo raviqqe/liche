@@ -8,7 +8,7 @@ import (
 )
 
 func TestURLCheckerCheck(t *testing.T) {
-	c := newURLChecker(0, newSemaphore(1024))
+	c := newURLChecker(0, "", newSemaphore(1024))
 
 	for _, u := range []string{"https://google.com", "README.md"} {
 		assert.Equal(t, nil, c.Check(u, "README.md"))
@@ -20,7 +20,7 @@ func TestURLCheckerCheck(t *testing.T) {
 }
 
 func TestURLCheckerCheckWithTimeout(t *testing.T) {
-	c := newURLChecker(30*time.Second, newSemaphore(1024))
+	c := newURLChecker(30*time.Second, "", newSemaphore(1024))
 
 	for _, u := range []string{"https://google.com", "README.md"} {
 		assert.Equal(t, nil, c.Check(u, "README.md"))
@@ -32,7 +32,7 @@ func TestURLCheckerCheckWithTimeout(t *testing.T) {
 }
 
 func TestURLCheckerCheckMany(t *testing.T) {
-	c := newURLChecker(0, newSemaphore(1024))
+	c := newURLChecker(0, "", newSemaphore(1024))
 
 	for _, us := range [][]string{{}, {"https://google.com", "README.md"}} {
 		rc := make(chan urlResult, 1024)
@@ -42,5 +42,42 @@ func TestURLCheckerCheckMany(t *testing.T) {
 			assert.NotEqual(t, "", r.url)
 			assert.Equal(t, nil, r.err)
 		}
+	}
+}
+func TestURLCheckerResolveURL(t *testing.T) {
+	f := newURLChecker(0, "", newSemaphore(1024))
+
+	for _, c := range []struct{ source, target string }{
+		{"foo", "foo"},
+		{"https://google.com", "https://google.com"},
+	} {
+		u, err := f.resolveURL(c.source)
+
+		assert.Equal(t, nil, err)
+		assert.Equal(t, c.target, u)
+	}
+}
+
+func TestURLCheckerResolveURLWithAbsolutePath(t *testing.T) {
+	f := newURLChecker(0, "", newSemaphore(1024))
+
+	u, err := f.resolveURL("/foo")
+
+	assert.NotEqual(t, nil, err)
+	assert.Equal(t, "", u)
+}
+
+func TestURLCheckerResolveURLWithDocumentRoot(t *testing.T) {
+	f := newURLChecker(0, "foo", newSemaphore(1024))
+
+	for _, c := range []struct{ source, target string }{
+		{"foo", "foo"},
+		{"https://google.com", "https://google.com"},
+		{"/foo", "foo/foo"},
+	} {
+		u, err := f.resolveURL(c.source)
+
+		assert.Equal(t, nil, err)
+		assert.Equal(t, c.target, u)
 	}
 }

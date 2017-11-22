@@ -2,10 +2,8 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"io/ioutil"
 	"net/url"
-	"path"
 	"strings"
 	"sync"
 	"time"
@@ -15,13 +13,12 @@ import (
 )
 
 type fileChecker struct {
-	urlChecker   urlChecker
-	documentRoot string
-	semaphore    semaphore
+	urlChecker urlChecker
+	semaphore  semaphore
 }
 
-func newFileChecker(timeout time.Duration, r string, s semaphore) fileChecker {
-	return fileChecker{newURLChecker(timeout, s), r, s}
+func newFileChecker(timeout time.Duration, d string, s semaphore) fileChecker {
+	return fileChecker{newURLChecker(timeout, d, s), s}
 }
 
 func (c fileChecker) Check(f string) ([]urlResult, error) {
@@ -96,18 +93,6 @@ func (c fileChecker) extractURLs(n *html.Node) ([]string, error) {
 	us := make(map[string]bool)
 	ns := []*html.Node{n}
 
-	addURL := func(u string) error {
-		u, err := c.resolveURL(u)
-
-		if err != nil {
-			return err
-		}
-
-		us[u] = true
-
-		return nil
-	}
-
 	for len(ns) > 0 {
 		i := len(ns) - 1
 		n := ns[i]
@@ -118,20 +103,14 @@ func (c fileChecker) extractURLs(n *html.Node) ([]string, error) {
 			case "a":
 				for _, a := range n.Attr {
 					if a.Key == "href" && isURL(a.Val) {
-						if err := addURL(a.Val); err != nil {
-							return nil, err
-						}
-
+						us[a.Val] = true
 						break
 					}
 				}
 			case "img":
 				for _, a := range n.Attr {
 					if a.Key == "src" && isURL(a.Val) {
-						if err := addURL(a.Val); err != nil {
-							return nil, err
-						}
-
+						us[a.Val] = true
 						break
 					}
 				}
@@ -144,18 +123,6 @@ func (c fileChecker) extractURLs(n *html.Node) ([]string, error) {
 	}
 
 	return stringSetToSlice(us), nil
-}
-
-func (c fileChecker) resolveURL(u string) (string, error) {
-	abs := strings.HasPrefix(u, "/")
-
-	if abs && c.documentRoot != "" {
-		return path.Join(c.documentRoot, u), nil
-	} else if abs {
-		return "", errors.New("document root directory is not specified")
-	}
-
-	return u, nil
 }
 
 func isURL(s string) bool {

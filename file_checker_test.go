@@ -144,62 +144,6 @@ func TestFileCheckerExtractURLs(t *testing.T) {
 	}
 }
 
-func TestFileCheckerExtractURLsWithInvalidHTML(t *testing.T) {
-	c := newFileChecker(0, "", newSemaphore(42))
-
-	for _, s := range []string{
-		`<a href="/foo.html">link</a>`,
-		`<img src="/foo.png" />`,
-	} {
-		n, err := html.Parse(strings.NewReader(s))
-
-		assert.Equal(t, nil, err)
-
-		us, err := c.extractURLs(n)
-
-		assert.Equal(t, ([]string)(nil), us)
-		assert.NotEqual(t, nil, err)
-	}
-}
-
-func TestFileCheckerResolveURL(t *testing.T) {
-	f := newFileChecker(0, "", newSemaphore(1024))
-
-	for _, c := range []struct{ source, target string }{
-		{"foo", "foo"},
-		{"https://google.com", "https://google.com"},
-	} {
-		u, err := f.resolveURL(c.source)
-
-		assert.Equal(t, nil, err)
-		assert.Equal(t, c.target, u)
-	}
-}
-
-func TestFileCheckerResolveURLWithAbsolutePath(t *testing.T) {
-	f := newFileChecker(0, "", newSemaphore(1024))
-
-	u, err := f.resolveURL("/foo")
-
-	assert.NotEqual(t, nil, err)
-	assert.Equal(t, "", u)
-}
-
-func TestFileCheckerResolveURLWithDocumentRoot(t *testing.T) {
-	f := newFileChecker(0, "foo", newSemaphore(1024))
-
-	for _, c := range []struct{ source, target string }{
-		{"foo", "foo"},
-		{"https://google.com", "https://google.com"},
-		{"/foo", "foo/foo"},
-	} {
-		u, err := f.resolveURL(c.source)
-
-		assert.Equal(t, nil, err)
-		assert.Equal(t, c.target, u)
-	}
-}
-
 func TestURLParse(t *testing.T) {
 	u, err := url.Parse("file-path")
 

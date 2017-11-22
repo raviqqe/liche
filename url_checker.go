@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"net/url"
 	"os"
 	"path"
+	"strings"
 	"sync"
 	"time"
 
@@ -11,15 +13,22 @@ import (
 )
 
 type urlChecker struct {
-	timeout   time.Duration
-	semaphore semaphore
+	timeout      time.Duration
+	documentRoot string
+	semaphore    semaphore
 }
 
-func newURLChecker(t time.Duration, s semaphore) urlChecker {
-	return urlChecker{t, s}
+func newURLChecker(t time.Duration, d string, s semaphore) urlChecker {
+	return urlChecker{t, d, s}
 }
 
 func (c urlChecker) Check(u string, f string) error {
+	u, err := c.resolveURL(u)
+
+	if err != nil {
+		return err
+	}
+
 	uu, err := url.Parse(u)
 
 	if err != nil {
@@ -56,6 +65,18 @@ func (c urlChecker) CheckMany(us []string, f string, rc chan<- urlResult) {
 
 	wg.Wait()
 	close(rc)
+}
+
+func (c urlChecker) resolveURL(u string) (string, error) {
+	abs := strings.HasPrefix(u, "/")
+
+	if abs && c.documentRoot != "" {
+		return path.Join(c.documentRoot, u), nil
+	} else if abs {
+		return "", errors.New("document root directory is not specified")
+	}
+
+	return u, nil
 }
 
 func checkRelativePath(p string, f string) error {
