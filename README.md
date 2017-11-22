@@ -26,7 +26,7 @@ Usage:
 	liche [-c <num-requests>] [-d <directory>] [-r] [-t <timeout>] [-v] <filenames>...
 
 Options:
-	-c, --concurrency <num-requests>  Set max number of concurrent HTTP requests. [default: 32]
+	-c, --concurrency <num-requests>  Set max number of concurrent HTTP requests. [default: 512]
 	-d, --document-root <directory>  Set document root directory for absolute paths.
 	-r, --recursive  Search Markdown and HTML files recursively
 	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds. Disabled by default.
