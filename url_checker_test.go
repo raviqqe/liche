@@ -51,7 +51,7 @@ func TestURLCheckerResolveURL(t *testing.T) {
 		{"foo", "foo"},
 		{"https://google.com", "https://google.com"},
 	} {
-		u, err := f.resolveURL(c.source)
+		u, err := f.resolveURL(c.source, "foo.md")
 
 		assert.Equal(t, nil, err)
 		assert.Equal(t, c.target, u)
@@ -61,7 +61,7 @@ func TestURLCheckerResolveURL(t *testing.T) {
 func TestURLCheckerResolveURLWithAbsolutePath(t *testing.T) {
 	f := newURLChecker(0, "", newSemaphore(1024))
 
-	u, err := f.resolveURL("/foo")
+	u, err := f.resolveURL("/foo", "foo.md")
 
 	assert.NotEqual(t, nil, err)
 	assert.Equal(t, "", u)
@@ -75,7 +75,7 @@ func TestURLCheckerResolveURLWithDocumentRoot(t *testing.T) {
 		{"https://google.com", "https://google.com"},
 		{"/foo", "foo/foo"},
 	} {
-		u, err := f.resolveURL(c.source)
+		u, err := f.resolveURL(c.source, "foo.md")
 
 		assert.Equal(t, nil, err)
 		assert.Equal(t, c.target, u)

@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"os"
 	"path"
-	"strings"
 	"sync"
 	"time"
 
@@ -23,7 +22,7 @@ func newURLChecker(t time.Duration, d string, s semaphore) urlChecker {
 }
 
 func (c urlChecker) Check(u string, f string) error {
-	u, err := c.resolveURL(u)
+	u, err := c.resolveURL(u, f)
 
 	if err != nil {
 		return err
@@ -36,7 +35,8 @@ func (c urlChecker) Check(u string, f string) error {
 	}
 
 	if uu.Scheme == "" {
-		return checkRelativePath(u, f)
+		_, err := os.Stat(uu.Path)
+		return err
 	}
 
 	c.semaphore.Request()
@@ -67,19 +67,24 @@ func (c urlChecker) CheckMany(us []string, f string, rc chan<- urlResult) {
 	close(rc)
 }
 
-func (c urlChecker) resolveURL(u string) (string, error) {
-	abs := strings.HasPrefix(u, "/")
+func (c urlChecker) resolveURL(u string, f string) (string, error) {
+	uu, err := url.Parse(u)
 
-	if abs && c.documentRoot != "" {
-		return path.Join(c.documentRoot, u), nil
-	} else if abs {
+	if err != nil {
+		return "", err
+	}
+
+	if uu.Scheme != "" {
+		return u, nil
+	}
+
+	if !path.IsAbs(uu.Path) {
+		return path.Join(path.Dir(f), uu.Path), nil
+	}
+
+	if c.documentRoot == "" {
 		return "", errors.New("document root directory is not specified")
 	}
 
-	return u, nil
-}
-
-func checkRelativePath(p string, f string) error {
-	_, err := os.Stat(path.Join(path.Dir(f), p))
-	return err
+	return path.Join(c.documentRoot, uu.Path), nil
 }
