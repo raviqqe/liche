@@ -45,6 +45,7 @@ Options:
 
 ## Supported properties
 
+- File extensions: `.md`, `.html`, `.htm`
 - HTML tags: `a`, `img`
 - HTML attributes: `href`, `src`
 - URL schemes: `http`, `https`
