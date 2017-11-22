@@ -1,9 +1,6 @@
 package main
 
-import (
-	"path/filepath"
-	"strings"
-)
+import "path/filepath"
 
 var extensions = map[string]bool{
 	".htm":  true,
@@ -17,5 +14,6 @@ func isMarkupFile(f string) bool {
 }
 
 func isHTMLFile(f string) bool {
-	return strings.HasSuffix(f, ".html") || strings.HasSuffix(f, ".htm")
+	e := filepath.Ext(f)
+	return e == ".html" || e == ".htm"
 }
