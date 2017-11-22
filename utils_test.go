@@ -25,3 +25,12 @@ func TestIndent(t *testing.T) {
 		assert.Equal(t, c.target, indent(c.source))
 	}
 }
+
+func TestCapitalizeFirst(t *testing.T) {
+	for _, ss := range [][2]string{
+		{"foo", "Foo"},
+		{"foo bar", "Foo bar"},
+	} {
+		assert.Equal(t, ss[1], capitalizeFirst(ss[0]))
+	}
+}

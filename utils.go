@@ -1,6 +1,10 @@
 package main
 
-import "github.com/kr/text"
+import (
+	"strings"
+
+	"github.com/kr/text"
+)
 
 func stringSetToSlice(s2b map[string]bool) []string {
 	ss := make([]string, 0, len(s2b))
@@ -14,4 +18,8 @@ func stringSetToSlice(s2b map[string]bool) []string {
 
 func indent(s string) string {
 	return text.Indent(s, "\t")
+}
+
+func capitalizeFirst(s string) string {
+	return strings.ToUpper(s[:1]) + s[1:]
 }

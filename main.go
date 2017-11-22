@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 	"sync"
 
 	"github.com/fatih/color"
@@ -59,7 +58,6 @@ func printToStderr(xs ...interface{}) {
 }
 
 func fail(err error) {
-	s := err.Error()
-	printToStderr(color.RedString(strings.ToUpper(s[:1]) + s[1:]))
+	printToStderr(color.RedString(capitalizeFirst(err.Error())))
 	os.Exit(1)
 }

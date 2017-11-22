@@ -17,7 +17,7 @@ func (r fileResult) String(verbose bool) string {
 	ss := make([]string, 0, len(r.urlResults))
 
 	if r.err != nil {
-		ss = append(ss, indent(color.RedString(r.err.Error())))
+		ss = append(ss, indent(color.RedString(capitalizeFirst(r.err.Error()))))
 	}
 
 	os := make([]string, 0, len(r.urlResults))
