@@ -94,8 +94,7 @@ func (c fileChecker) parseFile(f string) (*html.Node, error) {
 
 func (c fileChecker) extractURLs(n *html.Node) ([]string, error) {
 	us := make(map[string]bool)
-	ns := []*html.Node{}
-	ns = append(ns, n)
+	ns := []*html.Node{n}
 
 	addURL := func(u string) error {
 		u, err := c.resolveURL(u)
