@@ -50,6 +50,9 @@ Options:
 - HTML attributes: `href`, `src`
 - URL schemes: `http`, `https`
 
+Also supports relative and absolute paths.
+(Absolute paths need `--document-root` option.)
+
 ## License
 
 [MIT](LICENSE)
