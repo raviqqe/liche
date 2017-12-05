@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: golang
-    working_directory: /go/src/github.com/raviqqe/linkcheck
+    working_directory: /go/src/github.com/raviqqe/liche
     steps:
       - checkout
       - run:
