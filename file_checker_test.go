@@ -10,7 +10,7 @@ import (
 )
 
 func TestFileCheckerCheck(t *testing.T) {
-	c := newFileChecker(0, "", newSemaphore(1024))
+	c := newFileChecker(0, "", nil, newSemaphore(1024))
 
 	for _, f := range []string{"README.md", "test/foo.md", "test/foo.html"} {
 		rs, err := c.Check(f)
@@ -48,7 +48,7 @@ func TestFileCheckerCheck(t *testing.T) {
 }
 
 func TestFileCheckerCheckMany(t *testing.T) {
-	c := newFileChecker(0, "", newSemaphore(maxOpenFiles))
+	c := newFileChecker(0, "", nil, newSemaphore(maxOpenFiles))
 
 	for _, fs := range [][]string{
 		{"README.md"},
@@ -77,7 +77,7 @@ func TestFileCheckerCheckMany(t *testing.T) {
 }
 
 func TestFileCheckerCheckManyWithInvalidFiles(t *testing.T) {
-	c := newFileChecker(0, "", newSemaphore(maxOpenFiles))
+	c := newFileChecker(0, "", nil, newSemaphore(maxOpenFiles))
 
 	for _, fs := range [][]string{
 		{"test/absolute_path.md"},
@@ -107,7 +107,7 @@ func TestFileCheckerCheckManyWithInvalidFiles(t *testing.T) {
 }
 
 func TestFileCheckerExtractURLs(t *testing.T) {
-	c := newFileChecker(0, "", newSemaphore(42))
+	c := newFileChecker(0, "", nil, newSemaphore(42))
 
 	for _, x := range []struct {
 		html    string

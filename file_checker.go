@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	"net/url"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -17,8 +18,8 @@ type fileChecker struct {
 	semaphore  semaphore
 }
 
-func newFileChecker(timeout time.Duration, d string, s semaphore) fileChecker {
-	return fileChecker{newURLChecker(timeout, d, s), s}
+func newFileChecker(timeout time.Duration, d string, x *regexp.Regexp, s semaphore) fileChecker {
+	return fileChecker{newURLChecker(timeout, d, x, s), s}
 }
 
 func (c fileChecker) Check(f string) ([]urlResult, error) {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -13,13 +14,14 @@ const defaultConcurrency = maxOpenFiles / 2
 const usage = `Link checker for Markdown and HTML
 
 Usage:
-	liche [-c <num-requests>] [-d <directory>] [-r] [-t <timeout>] [-v] <filenames>...
+	liche [-c <num-requests>] [-d <directory>] [-r] [-t <timeout>] [-x <regex>] [-v] <filenames>...
 
 Options:
 	-c, --concurrency <num-requests>  Set max number of concurrent HTTP requests. [default: %v]
 	-d, --document-root <directory>  Set document root directory for absolute paths.
 	-r, --recursive  Search Markdown and HTML files recursively
 	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds. Disabled by default.
+	-x, --exclude <regex>  Regex of links to exclude from checking.
 	-v, --verbose  Be verbose.`
 
 type arguments struct {
@@ -28,6 +30,7 @@ type arguments struct {
 	concurrency  int
 	timeout      time.Duration
 	recursive    bool
+	exclude      *regexp.Regexp
 	verbose      bool
 }
 
@@ -58,12 +61,21 @@ func getArguments(argv []string) (arguments, error) {
 		}
 	}
 
+	var exclude *regexp.Regexp
+	if args["--exclude"] != nil {
+		exclude, err = regexp.Compile(args["--exclude"].(string))
+		if err != nil {
+			return arguments{}, err
+		}
+	}
+
 	return arguments{
 		args["<filenames>"].([]string),
 		args["--document-root"].(string),
 		int(c),
 		time.Duration(t) * time.Second,
 		args["--recursive"].(bool),
+		exclude,
 		args["--verbose"].(bool),
 	}, nil
 }
