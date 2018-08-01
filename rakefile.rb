@@ -45,6 +45,7 @@ task :lint do
   sh %w[gometalinter
         --deadline 300s
         --disable gocyclo
+        --disable gosec
         --disable vetshadow
         --enable gofmt
         --enable goimports

@@ -29,13 +29,13 @@ type arguments struct {
 	documentRoot    string
 	concurrency     int
 	timeout         time.Duration
-	recursive       bool
 	excludedPattern *regexp.Regexp
+	recursive       bool
 	verbose         bool
 }
 
 func getArguments(argv []string) (arguments, error) {
-	args, err := docopt.Parse(fmt.Sprintf(usage, defaultConcurrency), argv, true, "liche", true)
+	args, err := docopt.ParseArgs(fmt.Sprintf(usage, defaultConcurrency), argv, "0.1.0")
 
 	if err != nil {
 		return arguments{}, err
@@ -76,8 +76,8 @@ func getArguments(argv []string) (arguments, error) {
 		args["--document-root"].(string),
 		int(c),
 		time.Duration(t) * time.Second,
-		args["--recursive"].(bool),
 		r,
+		args["--recursive"].(bool),
 		args["--verbose"].(bool),
 	}, nil
 }
