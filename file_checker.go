@@ -18,8 +18,8 @@ type fileChecker struct {
 	semaphore  semaphore
 }
 
-func newFileChecker(timeout time.Duration, d string, x *regexp.Regexp, s semaphore) fileChecker {
-	return fileChecker{newURLChecker(timeout, d, x, s), s}
+func newFileChecker(timeout time.Duration, d string, r *regexp.Regexp, s semaphore) fileChecker {
+	return fileChecker{newURLChecker(timeout, d, r, s), s}
 }
 
 func (c fileChecker) Check(f string) ([]urlResult, error) {

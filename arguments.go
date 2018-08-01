@@ -25,13 +25,13 @@ Options:
 	-v, --verbose  Be verbose.`
 
 type arguments struct {
-	filenames    []string
-	documentRoot string
-	concurrency  int
-	timeout      time.Duration
-	recursive    bool
-	exclude      *regexp.Regexp
-	verbose      bool
+	filenames       []string
+	documentRoot    string
+	concurrency     int
+	timeout         time.Duration
+	recursive       bool
+	excludedPattern *regexp.Regexp
+	verbose         bool
 }
 
 func getArguments(argv []string) (arguments, error) {
@@ -61,9 +61,11 @@ func getArguments(argv []string) (arguments, error) {
 		}
 	}
 
-	var exclude *regexp.Regexp
+	r := (*regexp.Regexp)(nil)
+
 	if args["--exclude"] != nil {
-		exclude, err = regexp.Compile(args["--exclude"].(string))
+		r, err = regexp.Compile(args["--exclude"].(string))
+
 		if err != nil {
 			return arguments{}, err
 		}
@@ -75,7 +77,7 @@ func getArguments(argv []string) (arguments, error) {
 		int(c),
 		time.Duration(t) * time.Second,
 		args["--recursive"].(bool),
-		exclude,
+		r,
 		args["--verbose"].(bool),
 	}, nil
 }

@@ -13,14 +13,14 @@ import (
 )
 
 type urlChecker struct {
-	timeout      time.Duration
-	documentRoot string
-	exclude      *regexp.Regexp
-	semaphore    semaphore
+	timeout         time.Duration
+	documentRoot    string
+	excludedPattern *regexp.Regexp
+	semaphore       semaphore
 }
 
-func newURLChecker(t time.Duration, d string, x *regexp.Regexp, s semaphore) urlChecker {
-	return urlChecker{t, d, x, s}
+func newURLChecker(t time.Duration, d string, r *regexp.Regexp, s semaphore) urlChecker {
+	return urlChecker{t, d, r, s}
 }
 
 func (c urlChecker) Check(u string, f string) error {
@@ -29,7 +29,7 @@ func (c urlChecker) Check(u string, f string) error {
 		return err
 	}
 
-	if c.exclude != nil && c.exclude.MatchString(u) {
+	if c.excludedPattern != nil && c.excludedPattern.MatchString(u) {
 		return nil
 	}
 

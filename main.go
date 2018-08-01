@@ -30,7 +30,11 @@ func main() {
 	}()
 
 	rc := make(chan fileResult, maxOpenFiles)
-	c := newFileChecker(args.timeout, args.documentRoot, args.exclude, newSemaphore(args.concurrency))
+	c := newFileChecker(
+		args.timeout,
+		args.documentRoot,
+		args.excludedPattern,
+		newSemaphore(args.concurrency))
 
 	go c.CheckMany(m.Filenames(), rc)
 
