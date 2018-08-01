@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"regexp"
 	"sync"
 	"time"
 
@@ -14,18 +15,22 @@ import (
 type urlChecker struct {
 	timeout      time.Duration
 	documentRoot string
+	exclude      *regexp.Regexp
 	semaphore    semaphore
 }
 
-func newURLChecker(t time.Duration, d string, s semaphore) urlChecker {
-	return urlChecker{t, d, s}
+func newURLChecker(t time.Duration, d string, x *regexp.Regexp, s semaphore) urlChecker {
+	return urlChecker{t, d, x, s}
 }
 
 func (c urlChecker) Check(u string, f string) error {
 	u, local, err := c.resolveURL(u, f)
-
 	if err != nil {
 		return err
+	}
+
+	if c.exclude != nil && c.exclude.MatchString(u) {
+		return nil
 	}
 
 	if local {
