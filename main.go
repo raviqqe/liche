@@ -57,7 +57,9 @@ func main() {
 }
 
 func printToStderr(xs ...interface{}) {
-	fmt.Fprintln(os.Stderr, xs...)
+	if _, err := fmt.Fprintln(os.Stderr, xs...); err != nil {
+		panic(err)
+	}
 }
 
 func fail(err error) {
