@@ -36,14 +36,14 @@ jobs:
           command: rake install
       - persist_to_workspace:
           root: .
-          paths: [ bin/liche ]
+          paths: [ bin/liche, Dockerfile ]
 
   publish-docker:
     docker:
       - image: docker:17.05.0-ce-git
     steps:
+      - attach_workspace: { at: . }
       - setup_remote_docker
-      - attach_workspace: { at: /tmp }
       - run: docker build -t raviqqe/docker-liche:latest .
 
 workflows:
