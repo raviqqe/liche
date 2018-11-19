@@ -2,10 +2,11 @@ version: 2
 jobs:
   build:
     docker:
-      - image: golang
+      - image: circleci/golang:1.8
     working_directory: /go/src/github.com/raviqqe/liche
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Setup
           command: |
@@ -32,3 +33,11 @@ jobs:
       - run:
           name: Install
           command: rake install
+
+#   publish-docker:
+#     docker:
+#       - image: docker:17.05.0-ce-git
+#     steps:
+#       - checkout
+#       - setup_remote_docker
+#       - run: docker build -t raviqqe/docker-liche:latest .
