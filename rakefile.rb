@@ -42,15 +42,7 @@ task :format do
 end
 
 task :lint do
-  sh %w[gometalinter
-        --deadline 300s
-        --disable gocyclo
-        --disable gosec
-        --disable vetshadow
-        --enable gofmt
-        --enable goimports
-        --enable misspell
-        ./...].join ' '
+  sh 'gometalinter ./...'
   sh 'rubocop'
 end
 
