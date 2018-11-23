@@ -9,7 +9,7 @@ task :deps do
 end
 
 task :build do
-  sh 'go build -o bin/liche'
+  sh 'CGO_ENABLED=0 GOOS=linux go build -o bin/liche'
 end
 
 task :fast_unit_test do

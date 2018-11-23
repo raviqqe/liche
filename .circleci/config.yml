@@ -1,11 +1,13 @@
 version: 2
 jobs:
+
   build:
     docker:
       - image: golang
     working_directory: /go/src/github.com/raviqqe/liche
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Setup
           command: |
@@ -32,3 +34,21 @@ jobs:
       - run:
           name: Install
           command: rake install
+      - persist_to_workspace:
+          root: .
+          paths: [ bin/liche, Dockerfile.test ]
+
+  docker:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - attach_workspace: { at: . }
+      - setup_remote_docker
+      - run: docker build -f Dockerfile.test -t raviqqe/docker-liche:latest .
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
+      - docker: { requires: [ build ] }
