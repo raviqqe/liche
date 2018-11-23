@@ -1,4 +1,12 @@
 version: 2
+workflows:
+  version: 2
+  all:
+    jobs:
+      - build
+      - docker:
+          requires:
+            - build
 jobs:
   build:
     docker:
@@ -6,48 +14,38 @@ jobs:
     working_directory: /go/src/github.com/raviqqe/liche
     steps:
       - checkout
-      - setup_remote_docker
-      - run:
-          name: Setup
-          command: |
-            apt -y update --fix-missing
-            apt -y install rake
-            apt -y install bundler rake
-      - run:
-          name: Dependencies
-          command: rake deps
-      - run:
-          name: Lint
-          command: rake lint
-      - run:
-          name: Unit Test
-          command: |
-            rake unit_test
-            curl -sSL https://codecov.io/bash | bash
-      - run:
-          name: Integration Test
-          command: rake integration_test
-      - run:
-          name: Build
-          command: rake build
-      - run:
-          name: Install
-          command: rake install
+      - run: |
+          apt -y update --fix-missing
+          apt -y install bundler rake
+      - run: rake deps
+      - run: rake lint
+      - run: rake build
+      - run: rake unit_test
+      - run: curl -sSL https://codecov.io/bash | bash
+      - run: rake integration_test
+      - run: rake install
+      - run: ./liche --version > version
       - persist_to_workspace:
           root: .
-          paths: [bin/liche, Dockerfile.test]
-
+          paths:
+            - version
   docker:
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: docker:17
     steps:
-      - attach_workspace: { at: . }
       - setup_remote_docker
-      - run: docker build -f Dockerfile.test -t raviqqe/docker-liche:latest .
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: |
+          name=$DOCKER_USER/liche
+          version=$(cat version)
 
-workflows:
-  version: 2
-  build:
-    jobs:
-      - build
-      - docker: { requires: [build] }
+          if [ $CIRCLE_BRANCH = master -a $version != $(docker run $name --version) ]
+          then
+            docker build -t $name .
+            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            docker push $name
+            docker tag $name $name:$version
+            docker push $name:$version
+          fi
