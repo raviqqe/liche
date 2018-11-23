@@ -1,6 +1,5 @@
 version: 2
 jobs:
-
   build:
     docker:
       - image: golang
@@ -26,8 +25,8 @@ jobs:
             rake unit_test
             curl -sSL https://codecov.io/bash | bash
       - run:
-          name: Command Test
-          command: rake command_test
+          name: Integration Test
+          command: rake integration_test
       - run:
           name: Build
           command: rake build
@@ -36,7 +35,7 @@ jobs:
           command: rake install
       - persist_to_workspace:
           root: .
-          paths: [ bin/liche, Dockerfile.test ]
+          paths: [bin/liche, Dockerfile.test]
 
   docker:
     docker:
@@ -51,4 +50,4 @@ workflows:
   build:
     jobs:
       - build
-      - docker: { requires: [ build ] }
+      - docker: { requires: [build] }

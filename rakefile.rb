@@ -1,34 +1,24 @@
-TOTAL_COVERAGE_FILE = 'coverage.txt'.freeze # This path is specified by codecov.
-BIN_PATH = File.absolute_path 'bin'
-
 task :deps do
-  sh 'go get github.com/alecthomas/gometalinter github.com/mattn/goveralls'
+  sh 'go get github.com/alecthomas/gometalinter'
   sh 'gometalinter --install'
   sh 'go get -d -t ./...'
   sh 'gem install rake rubocop'
+  sh 'bundler install'
 end
 
 task :build do
-  sh 'CGO_ENABLED=0 GOOS=linux go build -o bin/liche'
-end
-
-task :fast_unit_test do
-  sh 'go test ./...'
+  sh 'CGO_ENABLED=0 go build -o liche'
 end
 
 task :unit_test do
-  sh "go test -covermode atomic -coverprofile #{TOTAL_COVERAGE_FILE}"
+  sh 'go test -covermode atomic -coverprofile coverage.txt'
 end
 
-task command_test: :build do
-  sh 'bundler install'
-  sh %W[bundler exec cucumber
-        -r examples/aruba.rb
-        PATH=#{BIN_PATH}:$PATH
-        examples].join ' '
+task integration_test: :build do
+  sh 'bundler exec cucumber PATH=$PWD:$PATH'
 end
 
-task test: %i[unit_test command_test]
+task test: %i[unit_test integration_test]
 
 task :format do
   sh 'go fix ./...'
