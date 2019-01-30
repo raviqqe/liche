@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"sync"
 	"time"
@@ -78,7 +79,7 @@ func (c urlChecker) resolveURL(u string, f string) (string, bool, error) {
 	}
 
 	if !path.IsAbs(uu.Path) {
-		return path.Join(path.Dir(f), uu.Path), true, nil
+		return path.Join(filepath.Dir(f), uu.Path), true, nil
 	}
 
 	if c.documentRoot == "" {
