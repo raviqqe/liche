@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/russross/blackfriday/v2"
 	"golang.org/x/net/html"
-	"gopkg.in/russross/blackfriday.v2"
 )
 
 type fileChecker struct {
