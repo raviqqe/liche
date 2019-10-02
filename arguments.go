@@ -35,7 +35,7 @@ type arguments struct {
 }
 
 func getArguments(argv []string) (arguments, error) {
-	args, err := docopt.ParseArgs(fmt.Sprintf(usage, defaultConcurrency), argv, "0.1.1")
+	args, err := docopt.ParseArgs(fmt.Sprintf(usage, defaultConcurrency), argv, "0.2.0")
 
 	if err != nil {
 		return arguments{}, err
