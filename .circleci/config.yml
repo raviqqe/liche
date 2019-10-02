@@ -18,17 +18,16 @@ jobs:
       - checkout
       - run: |
           apt -y update --fix-missing
-          apt -y install bundler rake
+          apt -y install bundler
       - run: tools/dependencies.sh
       - run: tools/lint.sh
       - run: tools/build.sh
       - run: tools/unit_test.sh
       - run: tools/integration_test.sh
-      - run: ./liche --version > version
       - persist_to_workspace:
           root: .
           paths:
-            - version
+            - liche
   docker:
     docker:
       - image: docker:17
@@ -39,7 +38,7 @@ jobs:
           at: .
       - run: |
           name=$DOCKER_USER/liche
-          version=$(cat version)
+          version=$(./liche --version)
 
           if [ $CIRCLE_BRANCH = master -a $version != $(docker run $name --version) ]
           then
