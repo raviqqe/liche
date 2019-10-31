@@ -9,7 +9,7 @@ import (
 )
 
 func TestURLCheckerCheck(t *testing.T) {
-	c := newURLChecker(0, "", nil, newSemaphore(1024))
+	c := newURLChecker(0, "", nil, false, newSemaphore(1024))
 
 	for _, u := range []string{"https://google.com", "README.md"} {
 		assert.Equal(t, nil, c.Check(u, "README.md"))
@@ -21,7 +21,7 @@ func TestURLCheckerCheck(t *testing.T) {
 }
 
 func TestURLCheckerCheckWithExclude(t *testing.T) {
-	c := newURLChecker(0, "", regexp.MustCompile(`^http:\/\/localhost:[13]$`), newSemaphore(1024))
+	c := newURLChecker(0, "", regexp.MustCompile(`^http:\/\/localhost:[13]$`), false, newSemaphore(1024))
 
 	for _, u := range []string{"http://localhost:1", "http://localhost:3", "README.md"} {
 		assert.Equal(t, nil, c.Check(u, "README.md"))
@@ -32,8 +32,24 @@ func TestURLCheckerCheckWithExclude(t *testing.T) {
 	}
 }
 
+func TestURLCheckerCheckWithExcludePrivateHosts(t *testing.T) {
+	c := newURLChecker(0, "", nil, true, newSemaphore(1024))
+
+	for _, u := range []string{
+		"http://localhost:1",
+		"http://localhost:3",
+		"http://127.0.0.1:1",
+		"http://169.254.169.254:1",
+		"http://192.168.99.100",
+		"http://example.test",
+		"http://example.abcdxyz",
+	} {
+		assert.Equal(t, nil, c.Check(u, "README.md"))
+	}
+}
+
 func TestURLCheckerCheckWithTimeout(t *testing.T) {
-	c := newURLChecker(30*time.Second, "", nil, newSemaphore(1024))
+	c := newURLChecker(30*time.Second, "", nil, false, newSemaphore(1024))
 
 	for _, u := range []string{"https://google.com", "README.md"} {
 		assert.Equal(t, nil, c.Check(u, "README.md"))
@@ -45,7 +61,7 @@ func TestURLCheckerCheckWithTimeout(t *testing.T) {
 }
 
 func TestURLCheckerCheckMany(t *testing.T) {
-	c := newURLChecker(0, "", nil, newSemaphore(1024))
+	c := newURLChecker(0, "", nil, false, newSemaphore(1024))
 
 	for _, us := range [][]string{{}, {"https://google.com", "README.md"}} {
 		rc := make(chan urlResult, 1024)
@@ -58,7 +74,7 @@ func TestURLCheckerCheckMany(t *testing.T) {
 	}
 }
 func TestURLCheckerResolveURL(t *testing.T) {
-	f := newURLChecker(0, "", nil, newSemaphore(1024))
+	f := newURLChecker(0, "", nil, false, newSemaphore(1024))
 
 	for _, c := range []struct {
 		source, target string
@@ -76,7 +92,7 @@ func TestURLCheckerResolveURL(t *testing.T) {
 }
 
 func TestURLCheckerResolveURLWithAbsolutePath(t *testing.T) {
-	f := newURLChecker(0, "", nil, newSemaphore(1024))
+	f := newURLChecker(0, "", nil, false, newSemaphore(1024))
 
 	u, _, err := f.resolveURL("/foo", "foo.md")
 
@@ -85,7 +101,7 @@ func TestURLCheckerResolveURLWithAbsolutePath(t *testing.T) {
 }
 
 func TestURLCheckerResolveURLWithDocumentRoot(t *testing.T) {
-	f := newURLChecker(0, "foo", nil, newSemaphore(1024))
+	f := newURLChecker(0, "foo", nil, false, newSemaphore(1024))
 
 	for _, c := range []struct {
 		source, target string

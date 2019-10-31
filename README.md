@@ -23,7 +23,7 @@ go get -u github.com/raviqqe/liche
 Link checker for Markdown and HTML
 
 Usage:
-	liche [-c <num-requests>] [-d <directory>] [-r] [-t <timeout>] [-x <regex>] [-v] <filenames>...
+	liche [-c <num-requests>] [-d <directory>] [-r] [-t <timeout>] [-x <regex>] [-p] [-v] <filenames>...
 
 Options:
 	-c, --concurrency <num-requests>  Set max number of concurrent HTTP requests. [default: 512]
@@ -31,6 +31,7 @@ Options:
 	-r, --recursive  Search Markdown and HTML files recursively
 	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds. Disabled by default.
 	-x, --exclude <regex>  Regex of links to exclude from checking.
+	-p, --exclude-private-hosts  Exclude private domains and ip addresses.
 	-v, --verbose  Be verbose.
 ```
 

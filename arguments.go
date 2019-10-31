@@ -14,7 +14,7 @@ const defaultConcurrency = maxOpenFiles / 2
 const usage = `Link checker for Markdown and HTML
 
 Usage:
-	liche [-c <num-requests>] [-d <directory>] [-r] [-t <timeout>] [-x <regex>] [-v] <filenames>...
+	liche [-c <num-requests>] [-d <directory>] [-r] [-t <timeout>] [-x <regex>] [-p] [-v] <filenames>...
 
 Options:
 	-c, --concurrency <num-requests>  Set max number of concurrent HTTP requests. [default: %v]
@@ -22,16 +22,18 @@ Options:
 	-r, --recursive  Search Markdown and HTML files recursively
 	-t, --timeout <timeout>  Set timeout for HTTP requests in seconds. Disabled by default.
 	-x, --exclude <regex>  Regex of links to exclude from checking.
+	-p, --exclude-private-hosts  Exclude private domains and ip addresses.
 	-v, --verbose  Be verbose.`
 
 type arguments struct {
-	filenames       []string
-	documentRoot    string
-	concurrency     int
-	timeout         time.Duration
-	excludedPattern *regexp.Regexp
-	recursive       bool
-	verbose         bool
+	filenames           []string
+	documentRoot        string
+	concurrency         int
+	timeout             time.Duration
+	excludedPattern     *regexp.Regexp
+	excludePrivateHosts bool
+	recursive           bool
+	verbose             bool
 }
 
 func getArguments(argv []string) (arguments, error) {
@@ -77,6 +79,7 @@ func getArguments(argv []string) (arguments, error) {
 		int(c),
 		time.Duration(t) * time.Second,
 		r,
+		args["--exclude-private-hosts"].(bool),
 		args["--recursive"].(bool),
 		args["--verbose"].(bool),
 	}, nil
