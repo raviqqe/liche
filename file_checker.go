@@ -18,8 +18,8 @@ type fileChecker struct {
 	semaphore  semaphore
 }
 
-func newFileChecker(timeout time.Duration, d string, r *regexp.Regexp, excludePrivateHosts bool, s semaphore) fileChecker {
-	return fileChecker{newURLChecker(timeout, d, r, excludePrivateHosts, s), s}
+func newFileChecker(timeout time.Duration, d string, r *regexp.Regexp, excludePrivateHosts, excludeLocalhost, excludeLinkLocal bool, s semaphore) fileChecker {
+	return fileChecker{newURLChecker(timeout, d, r, excludePrivateHosts, excludeLocalhost, excludeLinkLocal, s), s}
 }
 
 func (c fileChecker) Check(f string) ([]urlResult, error) {

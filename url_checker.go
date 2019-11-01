@@ -20,11 +20,13 @@ type urlChecker struct {
 	documentRoot        string
 	excludedPattern     *regexp.Regexp
 	excludePrivateHosts bool
+	excludeLocalhost    bool
+	excludeLinkLocal    bool
 	semaphore           semaphore
 }
 
-func newURLChecker(t time.Duration, d string, r *regexp.Regexp, excludePrivateHosts bool, s semaphore) urlChecker {
-	return urlChecker{t, d, r, excludePrivateHosts, s}
+func newURLChecker(t time.Duration, d string, r *regexp.Regexp, excludePrivateHosts, excludeLocalhost, excludeLinkLocal bool, s semaphore) urlChecker {
+	return urlChecker{t, d, r, excludePrivateHosts, excludeLocalhost, excludeLinkLocal, s}
 }
 
 func (c urlChecker) Check(u string, f string) error {
@@ -33,15 +35,27 @@ func (c urlChecker) Check(u string, f string) error {
 		return err
 	}
 
-	if !local && c.excludePrivateHosts {
+	if !local {
 		uu, _ := url.Parse(u)
 		host := uu.Hostname()
 		if ip := net.ParseIP(host); ip != nil {
-			if ip.IsLoopback() || ip.IsLinkLocalUnicast() || ip.IsLinkLocalMulticast() || isPrivate(ip) {
+			if c.excludePrivateHosts && isPrivate(ip) {
 				return nil
 			}
-		} else if _, icann := publicsuffix.PublicSuffix(host); !icann {
-			return nil // private domain
+			if c.excludeLocalhost && ip.IsLoopback() {
+				return nil
+			}
+			if c.excludeLinkLocal && (ip.IsLinkLocalUnicast() || ip.IsLinkLocalMulticast()) {
+				return nil
+			}
+		} else {
+			if host == "localhost" {
+				if c.excludeLocalhost {
+					return nil
+				}
+			} else if _, icann := publicsuffix.PublicSuffix(host); !icann && c.excludePrivateHosts {
+				return nil // private domain
+			}
 		}
 	}
 
