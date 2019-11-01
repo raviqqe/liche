@@ -43,8 +43,7 @@ func (c urlChecker) Check(u string, f string) error {
 	c.semaphore.Request()
 	defer c.semaphore.Release()
 
-	sc := http.StatusOK
-	err = nil
+	var sc int
 	if c.timeout == 0 {
 		sc, _, err = fasthttp.Get(nil, u)
 	} else {
