@@ -15,6 +15,8 @@ func TestURLCheckerCheck(t *testing.T) {
 		assert.Equal(t, nil, c.Check(u, "README.md"))
 	}
 
+	assert.NotEqual(t, nil, c.Check("http://www.google.com/README-I-DONT-EXIST.md", "README.md"))
+
 	for _, u := range []string{"https://hey-hey-hi-google.com", "READYOU.md", "://"} {
 		assert.NotEqual(t, nil, c.Check(u, "README.md"))
 	}
