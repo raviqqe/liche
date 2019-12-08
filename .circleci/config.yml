@@ -4,9 +4,18 @@ workflows:
   all:
     jobs:
       - build
+      - release:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
       - docker:
           requires:
             - build
+          filters:
+            branches:
+              only: master
 jobs:
   build:
     docker:
@@ -28,6 +37,26 @@ jobs:
           root: .
           paths:
             - liche
+  release:
+    docker:
+      - image: golang
+    environment:
+      GO111MODULE: "on"
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: |
+          version=$(./liche --version)
+
+          if git tag -l | grep $version
+          then
+            exit 0
+          fi
+
+          git tag $version
+          git push --tags
+          curl -sL https://git.io/goreleaser | bash
   docker:
     docker:
       - image: docker:17
@@ -40,11 +69,13 @@ jobs:
           name=$DOCKER_USER/liche
           version=$(./liche --version)
 
-          if [ $CIRCLE_BRANCH = master -a $version != $(docker run $name --version) ]
+          if [ $version = $(docker run $name --version) ]
           then
-            docker build -t $name .
-            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-            docker push $name
-            docker tag $name $name:$version
-            docker push $name:$version
+            exit 0
           fi
+
+          docker build -t $name .
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          docker push $name
+          docker tag $name $name:$version
+          docker push $name:$version
