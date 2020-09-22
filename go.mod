@@ -10,10 +10,12 @@ require (
 	github.com/kr/text v0.1.0
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.9 // indirect
-	github.com/russross/blackfriday/v2 v2.0.1
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/valyala/fasthttp v1.9.1-0.20200228200348-695f713fcf59
 	golang.org/x/net v0.0.0-20190930134127-c5a3c61f89f3
 	golang.org/x/sys v0.0.0-20191001151750-bb3f8db39f24 // indirect
+	gopkg.in/russross/blackfriday.v2 v2.0.1
 )
+
+replace gopkg.in/russross/blackfriday.v2 => github.com/russross/blackfriday/v2 v2.0.1
