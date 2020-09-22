@@ -16,6 +16,8 @@ It checks all `a` and `img` tags in specified files.
 go get -u github.com/raviqqe/liche
 ```
 
+* requires [Go Modules]("https://github.com/golang/go/wiki/Modules#how-to-use-modules")
+
 ## Usage
 
 ```sh
