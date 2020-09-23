@@ -1,21 +1,15 @@
 module github.com/raviqqe/liche
 
-go 1.13
+go 1.15
 
 require (
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/fatih/color v1.7.0
-	github.com/klauspost/compress v1.10.2 // indirect
-	github.com/klauspost/cpuid v1.2.3 // indirect
-	github.com/kr/text v0.1.0
-	github.com/mattn/go-colorable v0.1.4 // indirect
-	github.com/mattn/go-isatty v0.0.9 // indirect
+	github.com/fatih/color v1.9.0
+	github.com/golangci/golangci-lint v1.31.0 // indirect
+	github.com/kr/text v0.2.0
+	github.com/russross/blackfriday/v2 v2.0.1
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
-	github.com/stretchr/testify v1.4.0
-	github.com/valyala/fasthttp v1.9.1-0.20200228200348-695f713fcf59
-	golang.org/x/net v0.0.0-20190930134127-c5a3c61f89f3
-	golang.org/x/sys v0.0.0-20191001151750-bb3f8db39f24 // indirect
-	gopkg.in/russross/blackfriday.v2 v2.0.1
+	github.com/stretchr/testify v1.6.1
+	github.com/valyala/fasthttp v1.16.0
+	golang.org/x/net v0.0.0-20200904194848-62affa334b73
 )
-
-replace gopkg.in/russross/blackfriday.v2 => github.com/russross/blackfriday/v2 v2.0.1
