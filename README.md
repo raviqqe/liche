@@ -14,13 +14,14 @@ Sorry this project is not actively maintained anymore! 😢 Please consider migr
 
 It's because we found several problems with the goals of the project and the amount of work it needs.
 
-The goal of this software was originally meant to check links in Markdown files which are **compiled into HTML files and served via HTTP servers**. But that raises the following problems.
+The goal of this software was originally to check links in Markdown files which are **compiled into HTML files and served via HTTP servers**. But that raises the following problems.
 
-- We cannot test some links.
-  - For example, some markdown-based static site generators generate links at compile time, such as by automatic generation of table of contents.
+- We cannot test links not in the Markdown files.
+  - For example, some markdown-based static site generators generate links at compile time.
+  - e.g. Automatic generation of table of contents
 - We cannot test the behaviour of HTTP servers.
   - Different HTTP servers handles URLs differently.
-    - e.g. trailing slashes, inference of page file extensions, ...
+  - e.g. trailing slashes, inference of page file extensions, ...
 
 It needs a lot of work to support all these different use cases. In short, we need to emulate different HTTP servers as well as web browsers.
 
