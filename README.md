@@ -1,3 +1,33 @@
+## DEPRECATION NOTICE
+
+Sorry this project is not actively maintained anymore! 😢 Please consider migrating to one of the alternatives listed below.
+
+### Alternatives
+
+- [muffet](https://github.com/raviqqe/muffet)
+  - Fast website link checker in Go
+- [lychee](https://github.com/lycheeverse/lychee)
+  - A glorious link checker
+  - This tool supports testing links in local HTML or Markdown files and on websites.
+
+### Why is it not maintained anymore?
+
+It's because we found several problems with the goals of the project and the amount of work it needs.
+
+The goal of this software was originally meant to check links in Markdown files which are **compiled into HTML files and served via HTTP servers**. But that raises the following problems.
+
+- We cannot test some links.
+  - For example, some markdown-based static site generators generate links at compile time, such as by automatic generation of table of contents.
+- We cannot test the behaviour of HTTP servers.
+  - Different HTTP servers handles URLs differently.
+    - e.g. trailing slashes, inference of page file extensions, ...
+
+It needs a lot of work to support all these different use cases. In short, we need to emulate different HTTP servers as well as web browsers.
+
+### But I still want this...
+
+If you think this software is still valuable for you even in comparison with the alternatives listed above and want it to be maintained, please let us know by posting a new issue.
+
 # liche
 
 [![Circle CI](https://img.shields.io/circleci/project/github/raviqqe/liche.svg?style=flat-square)](https://circleci.com/gh/raviqqe/liche)
@@ -16,7 +46,7 @@ It checks all `a` and `img` tags in specified files.
 go get -u github.com/raviqqe/liche
 ```
 
-* requires [Go Modules]("https://github.com/golang/go/wiki/Modules#how-to-use-modules")
+- requires [Go Modules]("https://github.com/golang/go/wiki/Modules#how-to-use-modules")
 
 ## Usage
 
