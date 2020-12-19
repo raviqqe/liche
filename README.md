@@ -9,6 +9,8 @@ Sorry this project is not actively maintained anymore! 😢 Please consider migr
 - [lychee](https://github.com/lycheeverse/lychee)
   - A glorious link checker
   - This tool supports testing links both in local files and on websites.
+- [hyperlink](https://github.com/untitaker/hyperlink)
+  - Checks folder of HTML for relative/internal links (no markdown or external websites)
 
 ### Why is it not maintained anymore?
 
