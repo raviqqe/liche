@@ -18,7 +18,7 @@ The goal of this software was originally to check links in Markdown files which 
 
 - We cannot test links which do not exist in the Markdown files.
   - For example, some markdown-based static site generators generate links at compile time.
-  - e.g. Automatic generation of table of contents
+  - e.g. automatic generation of table of contents
 - We cannot test the behaviour of HTTP servers.
   - Different HTTP servers handles URLs differently.
   - e.g. trailing slashes, inference of page file extensions, ...
