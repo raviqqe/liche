@@ -23,7 +23,7 @@ The goal of this software was originally to check links in Markdown files which 
   - Different HTTP servers handles URLs differently.
   - e.g. trailing slashes, inference of page file extensions, ...
 
-It needs a lot of work to support all these different use cases. In short, we need to emulate different HTTP servers as well as web browsers.
+It needs a lot of work to support all these different use cases. In short, we need to emulate different Markdown file compilers and HTTP servers as well as web browsers.
 
 ### But I still want this...
 
