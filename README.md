@@ -8,7 +8,7 @@ Sorry this project is not actively maintained anymore! 😢 Please consider migr
   - Fast website link checker in Go
 - [lychee](https://github.com/lycheeverse/lychee)
   - A glorious link checker
-  - This tool supports testing links in local HTML or Markdown files and on websites.
+  - This tool supports testing links both in local files and on websites.
 
 ### Why is it not maintained anymore?
 
