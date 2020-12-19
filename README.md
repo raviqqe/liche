@@ -16,7 +16,7 @@ It's because we found several problems with the goals of the project and the amo
 
 The goal of this software was originally to check links in Markdown files which are **compiled into HTML files and served via HTTP servers**. But that raises the following problems.
 
-- We cannot test links not in the Markdown files.
+- We cannot test links which do not exist in the Markdown files.
   - For example, some markdown-based static site generators generate links at compile time.
   - e.g. Automatic generation of table of contents
 - We cannot test the behaviour of HTTP servers.
